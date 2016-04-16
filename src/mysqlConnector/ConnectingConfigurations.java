@@ -9,7 +9,10 @@ public final class ConnectingConfigurations {
 	static String dbName = "test";
 	
 	static public String getConnectingUrl() {
-		return "jdbc:mysql://" + hostIp + "/" + dbName;
+		return "jdbc:mysql://" + hostIp ;
+	}
+	static public String getConnectingUrlWithDatabaseName() {
+		return getConnectingUrl() + "/" + dbName;
 	}
 	static public String getConnectingUserName() {
 		return userName;

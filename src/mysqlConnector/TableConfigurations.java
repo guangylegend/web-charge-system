@@ -12,7 +12,6 @@ public final class TableConfigurations {
 			return ;
 		first = false;
 		
-		Table table;
 		String varchar255 = "VARCHAR(255)";
 		String varcharMAX = "VARCHAR(MAX)";
 		String INT = "INT";
@@ -21,20 +20,20 @@ public final class TableConfigurations {
 		 * user/manager table
 		 * all information about accounts
 		 */
-		table = new Table("accounts");
-		table.addSchema("userId", INT, true, false);
-		table.addSchema("userName", varchar255);	//	The real name of user
-		table.addSchema("loginName", varchar255);	//	Account name
-		table.addSchema("password", varchar255);	//	Encrypted password
-		table.addSchema("email", varchar255);
-		table.addSchema("companyAddress", varchar255);
-		table.addSchema("SignUpTime", "DATE");
-		table.addSchema("lastLogInTime", "DATE");
-		table.addSchema("remainedMoney", INT);	//	Money should be integer by default
+		Table accountTable = new Table("accounts");
+		accountTable.addSchema("userId", INT, true, false);
+		accountTable.addSchema("userName", varchar255);	//	The real name of user
+		accountTable.addSchema("loginName", varchar255);	//	Account name
+		accountTable.addSchema("password", varchar255);	//	Encrypted password
+		accountTable.addSchema("email", varchar255);
+		accountTable.addSchema("companyAddress", varchar255);
+		accountTable.addSchema("SignUpTime", "DATE");
+		accountTable.addSchema("lastLogInTime", "DATE");
+		accountTable.addSchema("remainedMoney", INT);	//	Money should be integer by default
 		
-		table.addSchema("priviligeLevel", INT);	//	Level 1,2,3.. for managers. Level 0 for users
-		table.addSchema("ActiveOrNot", INT);		//	0 or 1
-		tables.add(table);
+		accountTable.addSchema("priviligeLevel", INT);	//	Level 1,2,3.. for managers. Level 0 for users
+		accountTable.addSchema("ActiveOrNot", INT);		//	0 or 1
+		tables.add(accountTable);
 		
 		/*
 		 * services table
@@ -59,10 +58,10 @@ public final class TableConfigurations {
 		 * user-log table
 		 */
 		Table userLog = new Table("userLog");
-		userToServices.addSchema("logId", INT, true, false);
-		userToServices.addSchema("userId", INT, false, true);
-		userToServices.addSchema("time", "DATE", false, true);
-		userToServices.addSchema("Log", varchar255);	//	TODO log??
-		tables.add(userToServices);
+		userLog.addSchema("logId", INT, true, false);
+		userLog.addSchema("userId", INT, false, true);
+		userLog.addSchema("time", "DATE", false, true);
+		userLog.addSchema("Log", varchar255);	//	TODO log??
+		tables.add(userLog);
 	}
 }
