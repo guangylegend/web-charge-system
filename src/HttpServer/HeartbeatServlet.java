@@ -20,7 +20,7 @@ public class HeartbeatServlet extends HttpServlet {
     	SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String TimeString = time.format(new java.util.Date());
 		cnt++;
-		System.out.println("No."+ cnt + " HEAD " + TimeString + request.getRemoteAddr());
+		System.out.println("No."+ cnt + " HEAD " + TimeString + ' ' + request.getRemoteAddr());
     	response.setStatus(HttpServletResponse.SC_OK); 
     } 
 } 
