@@ -13,20 +13,21 @@ public class Table {
 	class Schema {
 		String columnName , type;
 		boolean isPrimaryKey = false, isIndex = false;
+		boolean isUnique = false;
 		
 		Schema(String _columnName, String _type) {
-			this.columnName = _columnName;
-			this.type = _type;
+			this.columnName = new String(_columnName);
+			this.type = new String(_type);
 		}
 	};
 	
 	ArrayList<Schema> schema= new ArrayList<Schema>();
 	
 	Table(String name) {
-		tableName = name;
+		tableName = new String(name);
 	}
 	void setName(String name) {
-		tableName = name;
+		tableName = new String(name);
 	}
 	void addSchema( String name, String type) {
 		Schema sch = new Schema(name,type);
@@ -42,9 +43,18 @@ public class Table {
 		schema.add( sch );
 	}
 	
+	void addSchema( String name, String type, boolean isPrimaryKey, boolean isIndex, boolean isUnique ) {
+		Schema sch = new Schema(name,type);
+		sch.isPrimaryKey = isPrimaryKey;
+		sch.isIndex = isIndex;
+		sch.isUnique = isUnique;
+		schema.add( sch );
+	}
+	
 	String getCreatTableStatement() {
 		String res = "CREATE TABLE ";
 		ArrayList<String> indexList = new ArrayList<String>();
+		ArrayList<String> UniqueList = new ArrayList<String>();
 		
 		res += this.tableName + " ";
 		res += "(" ;
@@ -54,11 +64,17 @@ public class Table {
 				res += " PRIMARY KEY";
 			else if (schema.get(i).isIndex)
 				indexList.add(schema.get(i).columnName);
+			
+			if ( schema.get(i).isUnique)
+				UniqueList.add(schema.get(i).columnName);
 			res += ",";
 		}
 		
 		for ( int i = 0 ; i < indexList.size() ; ++i )
 			res += "INDEX("+indexList.get(i)+"),";
+		for ( int i = 0 ; i < UniqueList.size() ; ++i )
+			res += "UNIQUE KEY("+UniqueList.get(i)+"),";
+		
 		if (res.endsWith(","))
 			res = res.substring(0, res.length()-1);
 		res += ")" ;
