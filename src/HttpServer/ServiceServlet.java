@@ -20,10 +20,21 @@ public class ServiceServlet extends HttpServlet {
     	SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String TimeString = time.format(new java.util.Date());
 		cnt++;
-		System.out.println("No."+ cnt +" POST "+ TimeString + request.getRemoteAddr());
+		System.out.println("No."+ cnt +" POST "+ TimeString + ' ' + request.getRemoteAddr());
 		response.setCharacterEncoding("UTF-8"); 
         response.setContentType("text/html"); 
     	response.setStatus(HttpServletResponse.SC_OK); 
     	response.getWriter().println("ready for service"); 
     } 
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { 
+    	SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String TimeString = time.format(new java.util.Date());
+		cnt++;
+		System.out.println("No."+ cnt +" GET "+ TimeString + ' ' + request.getRemoteAddr());
+		response.setCharacterEncoding("UTF-8"); 
+        response.setContentType("text/html"); 
+    	response.setStatus(HttpServletResponse.SC_OK); 
+    	response.getWriter().println("A GET Response"); 
+    }
 } 
