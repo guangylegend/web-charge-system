@@ -9,6 +9,7 @@ public class Main {
 		DbConnector c = new DbConnector();
 		
 		c.Test();
+		
 	}
 
 }
