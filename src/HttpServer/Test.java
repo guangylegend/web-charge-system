@@ -74,16 +74,16 @@ public class Test {
     }  
     public static void starthttpWork() throws Exception {  
     	    
-        URL url = new URL("http://127.0.0.1:8081/heartbeat");  
+        URL url = new URL("http://127.0.0.1:8081/service");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
         
-        urlConn.setRequestMethod("HEAD");  
-        //String teststr = "test";  
-        //OutputStream out = urlConn.getOutputStream();  
-        //out.write(teststr.getBytes());  
-        //out.flush();  
+        urlConn.setRequestMethod("POST");
+        OutputStream out = urlConn.getOutputStream();
+        String str = "para1=11&para2=12";
+        out.write(str.getBytes());  
+        out.flush();
         
         
         if(urlConn.getContentLength() != -1) {  
