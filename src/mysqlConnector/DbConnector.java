@@ -24,9 +24,27 @@ import java.sql.ResultSet;
 public class DbConnector {
 	//Connection con = null ;
 	
+	/**
+	 * Check if any dangerous character is in stmt  
+	 * @param stmt
+	 * @return true if safe.
+	 */
+	boolean securityCheck(String stmt) {
+		String[] dangerChar = new String[] {","
+				,"|"
+				,"."
+				," "
+				,"\\"
+				,"'"
+				,"\""};
+		for (int i = 0 ; i < dangerChar.length ; ++i)
+			if (stmt.contains(dangerChar[i]))
+				return false;
+		return true;
+	}
+	
 	// Connect to remote mysql database
 	// See ConnectingConfigurations for details
-	
 	DbConnector() throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.jdbc.Driver");
 		/*
@@ -43,16 +61,46 @@ public class DbConnector {
 	 */
 	void Test() throws SQLException {
 		
+		System.out.println("Tests initialiing database....");
 		init();
+		
 		Connection con = DriverManager.getConnection(				 
 				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
 				ConnectingConfigurations.getConnectingUserName(),
 				ConnectingConfigurations.getConnectingPassword());
+		
+		System.out.println("Tests creating tables....");
 		Statement stmt = con.createStatement();
 		stmt.execute("CREATE TABLE test(id int)");
 		stmt.execute("DROP TABLE test");
-		clear();
-		System.out.print("All testcases done!");
+		
+		
+		System.out.println("Tests user register....");
+		Common.UserInfo user = new Common.UserInfo();
+		user.userName = "hehe";
+		user.loginName = "hehe";
+		user.password = "123123";
+		this.inputUserRegister(user);
+		
+		user = new Common.UserInfo();
+		user.userName = "haha";
+		user.loginName = "haha";
+		user.password = "123qwe";
+		this.inputUserRegister(user);
+		
+		System.out.println("Tests read user infomations....");
+		user = this.getUserInfo("haha");
+		//System.err.println(user.userId + " " + user.userName);
+		
+		user = this.getUserInfo("hehe");
+		//System.err.println(user.userId + " " + user.userName);
+		
+		
+		
+		//System.out.println("Tests droping database....");
+		//clear();
+		
+		System.out.println("All testcases done!");
 	}
 	
 	/**
@@ -98,33 +146,48 @@ public class DbConnector {
 		TableConfigurations.generateAllTables();
 		for ( int i = 0 ; i < TableConfigurations.tables.size() ; ++i ) {
 			Table t = TableConfigurations.tables.get(i);
+			//System.err.println(t.getCreatTableStatement());
 			stmt.execute(t.getCreatTableStatement());
 		}
 	}
 	
 	/**
 	 * Register a new user in database
-	 * @param user Not all fields are needed, loginName, password must be included
-	 * @return true if register success
+	 * @param user Not all fields are needed. loginName, password must be included
+	 * @return true if register success, false if this userInfo is invalid
 	 * @throws SQLException 
 	 */
-	boolean inputUserRegister(Common.UserInfo user) throws SQLException {
+	public boolean inputUserRegister(Common.UserInfo user) throws SQLException {
 		Connection con = DriverManager.getConnection(				 
 				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
 				ConnectingConfigurations.getConnectingUserName(),
 				ConnectingConfigurations.getConnectingPassword());
 
 		Statement stmt = con.createStatement();
-		//@TODO
 		
-		
-		return true ;
+		if ( user.loginName == null || user.password == null ) {
+			return false;
+		}
+		if ( user.userId != null )
+			return false;
+		/**
+		 * Avoid SQL Injection Attack
+		 */
+		if ( securityCheck(user.loginName) && securityCheck(user.password) ) {
+			String s = "INSERT INTO " + TableConfigurations.tableNames[0]
+					+ user.getColumnNameStatement()
+					+ " VALUES " + user.getValueStatement();
+			//System.out.println(s);
+			return stmt.execute(s);
+		}
+		else
+			return false;
 	}
 	/**
 	 * When user login, add a log in database for this login
 	 * @return true if success
 	 */
-	boolean inputUserLogin(String userName) {
+	public boolean inputUserLogin(String userName) {
 		//@TODO
 		return true;
 	}
@@ -134,14 +197,14 @@ public class DbConnector {
 	 * @param serviceName
 	 * @return
 	 */
-	boolean inputUserCallService(String userName, String serviceName) {
+	public boolean inputUserCallService(String userName, String serviceName) {
 		return true;
 	}
 	/**
 	 * Add a new IP into white list
 	 * @return
 	 */
-	boolean inputWhiteList(Common.IP ipAddress) {
+	public boolean inputWhiteList(Common.IP ipAddress) {
 		//@TODO
 		return true;
 	}
@@ -150,49 +213,50 @@ public class DbConnector {
 	 * @param service
 	 * @return
 	 */
-	boolean inputNewService(Common.Service service) {
+	public boolean inputNewService(Common.Service service) {
 		//@TODO service table and somthing
 		return true;
 	}
 	/**
 	 * 
 	 * @param loginName 
-	 * @return information for this user if existed 
+	 * @return information for this user if existed. null if user not found 
 	 * @throws SQLException
-	 * @throws UserNotFoundException
-	 * @throws UnknownException "More than 1 user found"
 	 */
-	Common.UserInfo getUserInfo(String loginName) throws SQLException, UserNotFoundException, UnknownException {
+	public Common.UserInfo getUserInfo(String loginName) throws SQLException{
 		Connection con = DriverManager.getConnection(				 
 				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
 				ConnectingConfigurations.getConnectingUserName(),
 				ConnectingConfigurations.getConnectingPassword());
 
 		Statement stmt = con.createStatement();
-		ResultSet res =  stmt.executeQuery("SELECT * from " + TableConfigurations.tableNames[0] );	//	fetch results from account table
-		
+		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
+								+ TableConfigurations.tableNames[0]
+								+ " WHERE "
+								+ " loginName = " 
+								+ "'" + loginName + "'");	//	fetch results from account table
 		
 		int cnt = 0 ;
 		Common.UserInfo user = new Common.UserInfo();
 		while ( res.next() ) {
 			++cnt;
-
-			user.userId = res.getInt(0);
-			user.userName = res.getString(1); //	The real name of user
-			user.loginName = res.getString(2);	//	Account name
-			user.password = res.getString(3); //	Encrypted password
-			user.email = res.getString(4);
-			user.companyAddress = res.getString(5);
-			user.signUpTime = res.getDate(6);	//	Time when user registered
-			user.lastLogInTime = res.getDate(7);
-			user.remainedMoney = res.getInt(8);	//	Money = 1 <==> 0.01 RMB
-			user.priviligeLevel = res.getInt(9);	//	Level 1,2,3.. for managers. Level 0 for users
-			user.activeOrNot = res.getBoolean(10); //	0 or 1
+			
+			//System.err.println(res.toString());
+			
+			user.userId = res.getInt(1);
+			user.userName = res.getString(2); //	The real name of user
+			user.loginName = res.getString(3);	//	Account name
+			user.password = res.getString(4); //	Encrypted password
+			user.email = res.getString(5);
+			user.companyAddress = res.getString(6);
+			user.signUpTime = res.getDate(7);	//	Time when user registered
+			user.lastLogInTime = res.getDate(8);
+			user.remainedMoney = res.getInt(9);	//	Money = 1 <==> 0.01 RMB
+			user.priviligeLevel = res.getInt(10);	//	Level 1,2,3.. for managers. Level 0 for users
+			user.activeOrNot = res.getBoolean(11); //	0 or 1
 		}
 		if ( cnt == 0 )
-			throw new UserNotFoundException();
-		else if ( cnt > 1 )
-			throw new UnknownException("More than 1 user found!");
+			return null;
 		return user;
 	}
 	/**
@@ -200,7 +264,7 @@ public class DbConnector {
 	 * @param userName
 	 * @return a list of logs
 	 */
-	ArrayList<Common.UserLog> getUserLog(String userName) {
+	public ArrayList<Common.UserLog> getUserLog(String userName) {
 		ArrayList<Common.UserLog>res = new ArrayList<Common.UserLog>();
 		return res;	//@TODO
 	}
@@ -209,7 +273,7 @@ public class DbConnector {
 	 * @param serviceName
 	 * @return a service instance
 	 */
-	Common.Service getServiceByName(String serviceName) {
+	public Common.Service getServiceByName(String serviceName) {
 		return new Common.Service("haha");	//	@TODO
 	}
 }

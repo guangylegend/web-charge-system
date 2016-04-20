@@ -28,7 +28,7 @@ public final class TableConfigurations {
 		 * accounts table
 		 */
 		Table accountTable = new Table(tableNames[0]);
-		accountTable.addSchema("userId", INT, true, false);
+		accountTable.addSchemaWithAutoIncrease("userId", INT);	// unique userId will be set automaticlly	
 		accountTable.addSchema("userName", varchar255);	//	The real name of user
 		accountTable.addSchema("loginName", varchar255, false, true, true);	//	Account name
 		accountTable.addSchema("password", varchar255);	//	Encrypted password
@@ -45,7 +45,7 @@ public final class TableConfigurations {
 		 * services table
 		 */
 		Table services = new Table(tableNames[1]);
-		services.addSchema("serviceId", INT, true, false);
+		services.addSchemaWithAutoIncrease("serviceId", INT);
 		services.addSchema("serviceName", varchar255);
 		services.addSchema("servicePort", INT);
 		tables.add(services);
@@ -63,7 +63,7 @@ public final class TableConfigurations {
 		 * user-log table
 		 */
 		Table userLog = new Table(tableNames[3]);
-		userLog.addSchema("logId", INT, true, false);
+		userLog.addSchemaWithAutoIncrease("logId", INT);
 		userLog.addSchema("userId", INT, false, true);
 		userLog.addSchema("time", "DATE", false, true);
 		userLog.addSchema("Log", varchar255);	//	TODO log??

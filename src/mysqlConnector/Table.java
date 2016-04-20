@@ -14,6 +14,7 @@ public class Table {
 		String columnName , type;
 		boolean isPrimaryKey = false, isIndex = false;
 		boolean isUnique = false;
+		boolean autoInc = false;
 		
 		Schema(String _columnName, String _type) {
 			this.columnName = new String(_columnName);
@@ -50,6 +51,11 @@ public class Table {
 		sch.isUnique = isUnique;
 		schema.add( sch );
 	}
+	void addSchemaWithAutoIncrease(String name, String type) {
+		Schema sch = new Schema(name,type);
+		sch.autoInc = true;
+		schema.add(sch);
+	}
 	
 	String getCreatTableStatement() {
 		String res = "CREATE TABLE ";
@@ -60,6 +66,8 @@ public class Table {
 		res += "(" ;
 		for ( int i = 0 ; i < schema.size() ; ++i ) {
 			res += schema.get(i).columnName + " " + schema.get(i).type;
+			if ( schema.get(i).autoInc)
+				res += " NOT NULL AUTO_INCREMENT PRIMARY KEY";
 			if( schema.get(i).isPrimaryKey )
 				res += " PRIMARY KEY";
 			else if (schema.get(i).isIndex)
