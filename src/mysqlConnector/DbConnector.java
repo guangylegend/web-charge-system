@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.security.auth.login.Configuration;
+import javax.sql.CommonDataSource;
 
 import Common.Permission;
 import Common.Service;
@@ -96,6 +97,12 @@ public class DbConnector {
 		//System.err.println(user.userId + " " + user.userName);
 		
 		
+		this.inputNewService("service0");
+		this.inputNewParameterIntoService("service0", "para1", "string");
+		this.inputNewParameterIntoService("service0", "para2", "int");
+		
+		Common.Service service = this.getServiceByName("service0");
+		System.err.println(service);
 		
 		//System.out.println("Tests droping database....");
 		//clear();
@@ -187,7 +194,7 @@ public class DbConnector {
 	 * When user login, add a log in database for this login
 	 * @return true if success
 	 */
-	public boolean inputUserLogin(String userName) {
+	public boolean inputUserLogin(String loginName) {
 		//@TODO
 		return true;
 	}
@@ -197,7 +204,8 @@ public class DbConnector {
 	 * @param serviceName
 	 * @return
 	 */
-	public boolean inputUserCallService(String userName, String serviceName) {
+	public boolean inputUserCallService(String loginName, String serviceName) {
+		//!TODO
 		return true;
 	}
 	/**
@@ -209,13 +217,52 @@ public class DbConnector {
 		return true;
 	}
 	/**
-	 * 
+	 * Create a new service in db with empty parameter
 	 * @param service
-	 * @return
+	 * @return If success
+	 * @throws SQLException 
 	 */
-	public boolean inputNewService(Common.Service service) {
-		//@TODO service table and somthing
-		return true;
+	public boolean inputNewService(String serviceName) throws SQLException {
+		
+		Connection con = DriverManager.getConnection(				 
+				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
+				ConnectingConfigurations.getConnectingUserName(),
+				ConnectingConfigurations.getConnectingPassword());
+
+		Statement stmt = con.createStatement();
+		String s = "INSERT INTO " + TableConfigurations.tableNames[1]	//	service table
+				+ "(serviceName)"
+				+ " VALUES " + "('" + serviceName + "')";
+
+		//	Insert a new record into service table
+		return stmt.execute(s);
+	}
+	/**
+	 * Insert a new parameter to an existed service
+	 * @param para
+	 * @return True if success, false if this service dosen't exist
+	 * @throws SQLException 
+	 */
+	public boolean inputNewParameterIntoService( String serviceName, String paraName, String paraType ) throws SQLException {
+		Connection con = DriverManager.getConnection(				 
+				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
+				ConnectingConfigurations.getConnectingUserName(),
+				ConnectingConfigurations.getConnectingPassword());
+		
+		Common.Service service = this.getServiceByName(serviceName);
+		
+		Statement stmt = con.createStatement();
+		String s = "INSERT INTO " + TableConfigurations.tableNames[4]
+				+ "(serviceId,ParaName,ParaType)"
+				+ " VALUES " 
+				+ "("
+				+ service.serviceId + ","
+				+ "'" + paraName + "'" + ","
+				+ "'" + paraType + "'"
+				+ ")";
+		
+		//	Insert a new record into service table
+		return stmt.execute(s);
 	}
 	/**
 	 * 
@@ -264,17 +311,45 @@ public class DbConnector {
 	 * @param userName
 	 * @return a list of logs
 	 */
-	public ArrayList<Common.UserLog> getUserLog(String userName) {
+	public ArrayList<Common.UserLog> getUserLog(String longinName) {
 		ArrayList<Common.UserLog>res = new ArrayList<Common.UserLog>();
 		return res;	//@TODO
 	}
 	/**
 	 * 
 	 * @param serviceName
-	 * @return a service instance
+	 * @return a service instance, null if no such service
+	 * @throws SQLException 
 	 */
-	public Common.Service getServiceByName(String serviceName) {
-		return new Common.Service("haha");	//	@TODO
+	public Common.Service getServiceByName(String serviceName) throws SQLException {
+		Connection con = DriverManager.getConnection(				 
+				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
+				ConnectingConfigurations.getConnectingUserName(),
+				ConnectingConfigurations.getConnectingPassword());
+		Statement stmt = con.createStatement();
+		// Fetch serviceIds
+		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
+								+ TableConfigurations.tableNames[1]
+								+ " WHERE "
+								+ " serviceName = " 
+								+ "'" + serviceName + "'");	
+		Common.Service service = new Common.Service(serviceName);
+		if ( res.next() ) {
+			service.serviceId = res.getInt(1); 
+		}
+		else
+			return null;
+		
+		// Fetch serviceIds
+		res =  stmt.executeQuery("SELECT * FROM " 
+										+ TableConfigurations.tableNames[4]
+										+ " WHERE "
+										+ " serviceId = " 
+										+ service.serviceId);
+		while ( res.next() ) {
+			service.addPara(res.getString(2), res.getString(3));
+		}
+		return service;
 	}
 }
 

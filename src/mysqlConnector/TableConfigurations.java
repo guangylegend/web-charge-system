@@ -9,9 +9,14 @@ public final class TableConfigurations {
 	 * 2. services
 	 * 3. user_services
 	 * 4. userLog
+	 * 5. servicePara - (serviceId,paraName,paraType)
 	 */
 	static ArrayList<Table> tables = new ArrayList<Table>();
-	static String[] tableNames = new String[]{"accounts","services","user_services","userLog"};
+	static String[] tableNames = new String[]{"accounts"
+									,"services"
+									,"user_services"
+									,"userLog"
+									,"servicePara"};
 	static boolean first = true ;
 	
 	public static void generateAllTables() {
@@ -25,7 +30,8 @@ public final class TableConfigurations {
 		String INT = "INT";
 		
 		/*
-		 * accounts table
+		 * Account table
+		 * One user per row
 		 */
 		Table accountTable = new Table(tableNames[0]);
 		accountTable.addSchemaWithAutoIncrease("userId", INT);	// unique userId will be set automaticlly	
@@ -46,7 +52,7 @@ public final class TableConfigurations {
 		 */
 		Table services = new Table(tableNames[1]);
 		services.addSchemaWithAutoIncrease("serviceId", INT);
-		services.addSchema("serviceName", varchar255);
+		services.addSchema("serviceName", varchar255, false, false, true);
 		services.addSchema("servicePort", INT);
 		tables.add(services);
 		
@@ -68,5 +74,15 @@ public final class TableConfigurations {
 		userLog.addSchema("time", "DATE", false, true);
 		userLog.addSchema("Log", varchar255);	//	TODO log??
 		tables.add(userLog);
+		
+		
+		/*
+		 * service-parameters table
+		 */
+		Table servicePara = new Table(tableNames[4]);
+		servicePara.addSchema("serviceId", INT, false, true);
+		servicePara.addSchema("paraName", varchar255);
+		servicePara.addSchema("paraType", varchar255);
+		tables.add(servicePara);
 	}
 }
