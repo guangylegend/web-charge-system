@@ -12,6 +12,11 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
+
+import javax.servlet.ServletException; 
+import javax.servlet.http.HttpServlet; 
+import javax.servlet.http.HttpServletRequest; 
+import javax.servlet.http.HttpServletResponse; 
   
 public class Test {  
 	private static String WhiteList = "139.224.6.124,139.196.152.74,139.196.240.214,139.196.148.49";
@@ -74,12 +79,13 @@ public class Test {
     }  
     public static void starthttpWork() throws Exception {  
     	    
-        URL url = new URL("http://127.0.0.1:8081/heartbeat");  
+        URL url = new URL("http://127.0.0.1:8081/service");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
         
-        urlConn.setRequestMethod("HEAD");  
+        urlConn.setRequestMethod("POST");  
+        
         //String teststr = "test";  
         //OutputStream out = urlConn.getOutputStream();  
         //out.write(teststr.getBytes());  
