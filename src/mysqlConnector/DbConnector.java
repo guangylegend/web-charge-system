@@ -10,7 +10,6 @@ import java.util.Date;
 
 import javax.security.auth.login.Configuration;
 
-import Common.Permission;
 import Common.Service;
 
 import java.sql.ResultSet;
@@ -27,7 +26,7 @@ public class DbConnector {
 	// Connect to remote mysql database
 	// See ConnectingConfigurations for details
 	
-	DbConnector() throws SQLException, ClassNotFoundException {
+	public DbConnector() throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.jdbc.Driver");
 		/*
 		 * con = DriverManager.getConnection(
@@ -162,7 +161,7 @@ public class DbConnector {
 	 * @throws UserNotFoundException
 	 * @throws UnknownException "More than 1 user found"
 	 */
-	Common.UserInfo getUserInfo(String loginName) throws SQLException, UserNotFoundException, UnknownException {
+	public Common.UserInfo getUserInfo(String loginName) throws SQLException, UnknownException {
 		Connection con = DriverManager.getConnection(				 
 				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
 				ConnectingConfigurations.getConnectingUserName(),
@@ -190,7 +189,7 @@ public class DbConnector {
 			user.activeOrNot = res.getBoolean(10); //	0 or 1
 		}
 		if ( cnt == 0 )
-			throw new UserNotFoundException();
+			return null;
 		else if ( cnt > 1 )
 			throw new UnknownException("More than 1 user found!");
 		return user;

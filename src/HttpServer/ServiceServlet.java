@@ -32,7 +32,7 @@ public class ServiceServlet extends HttpServlet {
     	response.setStatus(HttpServletResponse.SC_OK);
     	int a = Integer.valueOf(request.getParameter("para1"));
     	int b = Integer.valueOf(request.getParameter("para2"));
-    	response.getWriter().println(core.sum(a, b)); 
+    	response.getWriter().println("123"); 
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { 
