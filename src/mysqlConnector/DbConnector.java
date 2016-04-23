@@ -23,7 +23,6 @@ import java.sql.ResultSet;
  * All you need is the interface of DbConnector
  */
 public class DbConnector {
-	//Connection con = null ;
 	
 	/**
 	 * Check if any dangerous character is in stmt  
@@ -43,18 +42,19 @@ public class DbConnector {
 				return false;
 		return true;
 	}
-	
-	// Connect to remote mysql database
-	// See ConnectingConfigurations for details
-	DbConnector() throws SQLException, ClassNotFoundException {
-		Class.forName("com.mysql.jdbc.Driver");
-		/*
-		 * con = DriverManager.getConnection(
-		 
+	Connection conectionToDB() throws SQLException {
+		return DriverManager.getConnection(
+				 
 				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
 				ConnectingConfigurations.getConnectingUserName(),
 				ConnectingConfigurations.getConnectingPassword());
-		*/
+	}
+	
+	// Connect to remote mysql database
+	// See ConnectingConfigurations for details
+	public DbConnector() throws SQLException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver");
+		
 	}
 	/**
 	 * Simply test if the connector works well 
@@ -65,10 +65,7 @@ public class DbConnector {
 		System.out.println("Tests initialiing database....");
 		init();
 		
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
+		Connection con = this.conectionToDB();
 		
 		System.out.println("Tests creating tables....");
 		Statement stmt = con.createStatement();
@@ -130,11 +127,7 @@ public class DbConnector {
 	 * @throws SQLException
 	 */
 	public void clear() throws SQLException{
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrl(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
-
+		Connection con = this.conectionToDB();
 		Statement stmt = con.createStatement();
 		stmt.execute("DROP DATABASE IF EXISTS " + ConnectingConfigurations.getConnectingDatabaseName() );
 	}
@@ -144,10 +137,7 @@ public class DbConnector {
 	 */
 	void createTables() throws SQLException {
 		
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
+		Connection con = this.conectionToDB();
 
 		Statement stmt = con.createStatement();
 		TableConfigurations.generateAllTables();
@@ -159,18 +149,19 @@ public class DbConnector {
 	}
 	
 	/**
-	 * Register a new user in database
+	 * Register a new user in database with 0.00 money
 	 * @param user Not all fields are needed. loginName, password must be included
 	 * @return true if register success, false if this userInfo is invalid
 	 * @throws SQLException 
 	 */
 	public boolean inputUserRegister(Common.UserInfo user) throws SQLException {
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
+		Connection con = this.conectionToDB();
 
 		Statement stmt = con.createStatement();
+		
+		user.Money = new Integer(0);
+		if ( user.priviligeLevel == null )
+			user.priviligeLevel = new Integer(2) ;
 		
 		if ( user.loginName == null || user.password == null ) {
 			return false;
@@ -211,10 +202,19 @@ public class DbConnector {
 	/**
 	 * Add a new IP into white list
 	 * @return
+	 * @throws SQLException 
 	 */
-	public boolean inputWhiteList(Common.IP ipAddress) {
-		//@TODO
-		return true;
+	public boolean inputWhiteList(Common.IP ipAddress) throws SQLException {
+		
+		Connection con = this.conectionToDB();
+
+		Statement stmt = con.createStatement();
+		String s = "INSERT INTO " + TableConfigurations.tableNames[5]	//	service table
+				+ "(ip)"
+				+ " VALUES " + "('" + ipAddress + "')";
+
+		return stmt.execute(s);
+		
 	}
 	/**
 	 * Create a new service in db with empty parameter
@@ -224,11 +224,7 @@ public class DbConnector {
 	 */
 	public boolean inputNewService(String serviceName) throws SQLException {
 		
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
-
+		Connection con = this.conectionToDB();
 		Statement stmt = con.createStatement();
 		String s = "INSERT INTO " + TableConfigurations.tableNames[1]	//	service table
 				+ "(serviceName)"
@@ -244,24 +240,42 @@ public class DbConnector {
 	 * @throws SQLException 
 	 */
 	public boolean inputNewParameterIntoService( String serviceName, String paraName, String paraType ) throws SQLException {
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
-		
-		Common.Service service = this.getServiceByName(serviceName);
+		Connection con = this.conectionToDB();
 		
 		Statement stmt = con.createStatement();
 		String s = "INSERT INTO " + TableConfigurations.tableNames[4]
-				+ "(serviceId,ParaName,ParaType)"
+				+ "(serviceName,ParaName,ParaType)"
 				+ " VALUES " 
 				+ "("
-				+ service.serviceId + ","
+				+ "'" + serviceName + "'" + ","
 				+ "'" + paraName + "'" + ","
 				+ "'" + paraType + "'"
 				+ ")";
 		
 		//	Insert a new record into service table
+		return stmt.execute(s);
+	}
+	/**
+	 * Set a user's money into @money
+	 * @param loginName
+	 * @param money
+	 * @return true if success
+	 * @throws SQLException
+	 */
+	public boolean setUserMoney(String loginName, int money) throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = " UPDATE " + TableConfigurations.tableNames[0]
+				+ " SET Money = " + money
+				+ " WHERE loginName = " + "'" + loginName + "'"; 
+		return stmt.execute(s);
+	}
+	public boolean setServiceFee(String serviceName, int cost) throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = " UPDATE " + TableConfigurations.tableNames[1]
+				+ " SET ServiceFee = " + cost
+				+ " WHERE ServiceName = " + "'" + serviceName + "'"; 
 		return stmt.execute(s);
 	}
 	/**
@@ -271,10 +285,7 @@ public class DbConnector {
 	 * @throws SQLException
 	 */
 	public Common.UserInfo getUserInfo(String loginName) throws SQLException{
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
+		Connection con = this.conectionToDB();
 
 		Statement stmt = con.createStatement();
 		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
@@ -298,7 +309,7 @@ public class DbConnector {
 			user.companyAddress = res.getString(6);
 			user.signUpTime = res.getDate(7);	//	Time when user registered
 			user.lastLogInTime = res.getDate(8);
-			user.remainedMoney = res.getInt(9);	//	Money = 1 <==> 0.01 RMB
+			user.Money = res.getInt(9);	//	Money = 1 <==> 0.01 RMB
 			user.priviligeLevel = res.getInt(10);	//	Level 1,2,3.. for managers. Level 0 for users
 			user.activeOrNot = res.getBoolean(11); //	0 or 1
 		}
@@ -322,10 +333,7 @@ public class DbConnector {
 	 * @throws SQLException 
 	 */
 	public Common.Service getServiceByName(String serviceName) throws SQLException {
-		Connection con = DriverManager.getConnection(				 
-				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
-				ConnectingConfigurations.getConnectingUserName(),
-				ConnectingConfigurations.getConnectingPassword());
+		Connection con = this.conectionToDB();
 		Statement stmt = con.createStatement();
 		// Fetch serviceIds
 		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
@@ -335,7 +343,8 @@ public class DbConnector {
 								+ "'" + serviceName + "'");	
 		Common.Service service = new Common.Service(serviceName);
 		if ( res.next() ) {
-			service.serviceId = res.getInt(1); 
+			service.serviceId = res.getInt("serviceId");
+			service.serviceFee = res.getInt("serviceFee");
 		}
 		else
 			return null;
@@ -344,12 +353,59 @@ public class DbConnector {
 		res =  stmt.executeQuery("SELECT * FROM " 
 										+ TableConfigurations.tableNames[4]
 										+ " WHERE "
-										+ " serviceId = " 
-										+ service.serviceId);
+										+ " serviceName = " 
+										+ "'" + serviceName + "'");
 		while ( res.next() ) {
 			service.addPara(res.getString(2), res.getString(3));
 		}
 		return service;
+	}
+	/**
+	 * @return Return all the service as an arraylist
+	 * @throws SQLException
+	 */
+	public ArrayList<Common.Service> getAllServices() throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		// Fetch serviceIds
+		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
+								+ TableConfigurations.tableNames[1] );	
+		ArrayList<Common.Service> serviceList = new ArrayList<Service>();
+		while ( res.next() ) {
+			Common.Service service= new Common.Service( res.getString("serviceName") );
+			service.serviceId = res.getInt("serviceId");
+			service.serviceFee = res.getInt("serviceFee");
+			
+			serviceList.add(service);
+		}
+		
+		res = stmt.executeQuery("SELECT * FROM " + TableConfigurations.tableNames[4]);
+		while ( res.next() ) {
+			String serviceName = res.getString("serviceName");
+			for ( Common.Service s : serviceList) {
+				if ( s.serviceName.equals(serviceName)) {
+					s.addPara(res.getString("paraName"), res.getString("paraType"));
+					break;
+				}
+			}
+		}
+		return serviceList;
+	}
+	/**
+	 * @param ip
+	 * @return true if this ip is contained in the white list
+	 * @throws SQLException 
+	 */
+	public boolean containedByWhiteList( Common.IP ip ) throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		// Fetch serviceIds
+		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
+								+ TableConfigurations.tableNames[5]
+								+ " WHERE "
+								+ " ip = " 
+								+ "'" + ip + "'");	
+		return res.next();
 	}
 }
 

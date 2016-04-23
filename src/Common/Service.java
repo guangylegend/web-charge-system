@@ -27,7 +27,7 @@ public class Service {
 	}
 	
 	public String serviceName;
-	public Integer serviceId, servicePort;
+	public Integer serviceId, servicePort,serviceFee;
 	public ArrayList<Para> paras;
 	
 	
@@ -46,11 +46,14 @@ public class Service {
 	@Override
 	public String toString() {
 		String res = "Name:" + this.serviceName;
+		if ( serviceFee != null )
+			res += ",Fee:" + serviceFee;
 		res += '(';
 		for ( int i = 0 ; i < paras.size(); ++i ) {
 			res += paras.get(i).paraName + " " + paras.get(i).paraType + ",";
 		}
-		
+		if ( res.endsWith(","))
+			res = res.substring(0, res.length()-1);
 		res += ')';
 		return res;
 	}
