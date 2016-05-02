@@ -11,7 +11,7 @@ public class Core extends Thread {
 	private HashSet<String> IpWhiteList;
 	private DbConnector db;
 	
-	public String handleRequest(String req) {
+	public String handleRequest(Request req) {
 /*		if (!IpWhiteList.contains(request.ip)) {
 			response.status = "Fail";
 			response.content = "Your IP is " + request.ip + ", which is not in whitelist.";

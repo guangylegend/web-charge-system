@@ -93,7 +93,7 @@ public class Test {
     }
     
     public static void starthttpWork() throws Exception {    
-        /*URL url = new URL("http://139.196.155.136:8080/TestNewPlat/OneToOne");  
+        URL url = new URL("http://139.196.155.136:8080/TestNewPlat/OneToOne");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
@@ -102,12 +102,12 @@ public class Test {
         OutputStream out = urlConn.getOutputStream();
         String pic1 = null, pic2 = null;
         try {
-        	pic1 = GetImageStr("D:\\picture\\Î´ÃüÃû.jpg");
-        	pic2 = GetImageStr("D:\\picture\\IMG_8630.jpg");
+        	pic2 = GetImageStr("D:\\picture\\Î´ÃüÃû.jpg");
+        	pic1 = GetImageStr("D:\\picture\\IMG_8630.jpg");
         } catch (Exception e) {
         	e.printStackTrace();
         }
-        String str = "{\"pic1\":\"" + pic1 + "" + "\",\"pic2\":\"" + pic2 + "\"}";
+        String str = "{\"pic2\":\"" + pic1 + "" + "\",\"pic1\":\"" + pic2 + "\"}";
         System.out.println(str);
         out.write(str.getBytes());  
         out.flush();
@@ -126,8 +126,8 @@ public class Test {
                 urlConn.disconnect();  
             }  
         }  
-    }*/
-    	URL url = new URL("http://127.0.0.1/faces/recognition/compare");  
+    }
+    	/*URL url = new URL("http://127.0.0.1/faces/recognition/compare");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
@@ -151,5 +151,6 @@ public class Test {
                 in.close();  
                 urlConn.disconnect();  
             }  
-        }  }
+        }
+    }*/
 }  
