@@ -1,7 +1,6 @@
 package Server;
 
 import HttpServer.MyHttpServer;
-import Common.Config;
 
 public class Entry {
 	static public void main(String args[]) {

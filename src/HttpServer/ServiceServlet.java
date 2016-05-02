@@ -3,6 +3,7 @@ package HttpServer;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.ServletException; 
 import javax.servlet.http.HttpServlet; 
@@ -30,11 +31,14 @@ public class ServiceServlet extends HttpServlet {
         response.setContentType("text/html"); 
     	response.setStatus(HttpServletResponse.SC_OK);
     	
+    	String json = null;
     	Enumeration<String> names = request.getParameterNames();
-    	while (names.hasMoreElements()) {
-    		String name = names.nextElement();
-    		System.out.println(name + " " + request.getParameter(name));
-    	}
-    	response.getWriter().println("123"); 
+    	if (names.hasMoreElements()) {
+    		json = names.nextElement();
+        	response.getWriter().println(json);
+    	} else {
+    		//
+    		System.err.println("input format error");
+    	} 
     }
 }

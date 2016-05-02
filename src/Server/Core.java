@@ -3,8 +3,6 @@ package Server;
 import java.sql.SQLException;
 import java.util.HashSet;
 
-import Common.Request;
-import Common.Response;
 import Common.UserInfo;
 import mysqlConnector.DbConnector;
 import mysqlConnector.UnknownException;
@@ -13,10 +11,8 @@ public class Core extends Thread {
 	private HashSet<String> IpWhiteList;
 	private DbConnector db;
 	
-	public String handleRequest(Request request) {
-		Response response = new Response();
-		
-		if (!IpWhiteList.contains(request.ip)) {
+	public String handleRequest(String req) {
+/*		if (!IpWhiteList.contains(request.ip)) {
 			response.status = "Fail";
 			response.content = "Your IP is " + request.ip + ", which is not in whitelist.";
 			return response.toString();
@@ -36,7 +32,8 @@ public class Core extends Thread {
 		if (user.remainedMoney <= 0) {//!!!
 			response.status = "";
 		}
-		return response.toString();
+		return response.toString();*/
+		return null;
 	}
 	
 	@Override
@@ -45,8 +42,10 @@ public class Core extends Thread {
 			db = new DbConnector();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.err.println("DB connector initilize fail");
 			return;
 		}
+		
 		while (true) {
 			IpWhiteList = new HashSet<String>();
 			try {

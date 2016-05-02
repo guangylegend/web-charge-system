@@ -134,11 +134,10 @@ public class Test {
         
         urlConn.setRequestMethod("POST");
         OutputStream out = urlConn.getOutputStream();
-        String str = "para1=1&para2=2";
+        String str = "{\"hehe\":{\"user\":\"abc\",\"password\":\"123\"}}";
         System.out.println(str);
         out.write(str.getBytes());  
         out.flush();
-        
         
         if(urlConn.getContentLength() != -1) {  
             if (urlConn.getResponseCode() == 200) {  
