@@ -9,17 +9,25 @@ import java.util.ArrayList;
  */
 
 public class Service {
-	class Para {
+	public class Para {
 		String paraName;
-		String paraType;
+		String paraType;	//	enum: "int", "string", 
 		
-		Para(String name, String type) {
+		public Para(String name, String type) {
 			paraName = new String(name);
 			paraType = new String(type);
+		}
+		/**
+		 * @return 'paraname','paratype'
+		 */
+		public String nameType() {
+			return "'" + paraName + "'" + ","
+					+ "'" + paraType + "'" ;
 		}
 	}
 	
 	public String serviceName;
+	public Integer serviceId, servicePort;
 	public ArrayList<Para> paras;
 	
 	
@@ -32,7 +40,7 @@ public class Service {
 	 * @param name
 	 * @param type
 	 */
-	void addPara(String name, String type) {
+	public void addPara(String name, String type) {
 		paras.add(new Para(name,type));
 	}
 	@Override

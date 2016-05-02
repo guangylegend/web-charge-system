@@ -1,6 +1,8 @@
 package HttpServer;  
   
 import java.io.BufferedReader;  
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;  
 import java.io.InputStreamReader;  
 import java.io.OutputStream;  
@@ -12,6 +14,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
+
+import sun.misc.BASE64Encoder;
   
 public class Test {  
 	private static String WhiteList = "139.224.6.124,139.196.152.74,139.196.240.214,139.196.148.49";
@@ -71,17 +75,40 @@ public class Test {
                 urlConn.disconnect();  
             }  
         }  
-    }  
-    public static void starthttpWork() throws Exception {  
-    	    
-        URL url = new URL("http://127.0.0.1:8081/service");  
+    }
+    
+    public static String GetImageStr(String imgFilePath) {
+        byte[] data = null;
+        try {
+            InputStream in = new FileInputStream(imgFilePath);
+            data = new byte[in.available()];
+            in.read(data);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);
+    }
+    
+    public static void starthttpWork() throws Exception {    
+        /*URL url = new URL("http://139.196.155.136:8080/TestNewPlat/OneToOne");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
         
         urlConn.setRequestMethod("POST");
         OutputStream out = urlConn.getOutputStream();
-        String str = "para1=11&para2=12";
+        String pic1 = null, pic2 = null;
+        try {
+        	pic1 = GetImageStr("D:\\picture\\Î´ÃüÃû.jpg");
+        	pic2 = GetImageStr("D:\\picture\\IMG_8630.jpg");
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        String str = "{\"pic1\":\"" + pic1 + "" + "\",\"pic2\":\"" + pic2 + "\"}";
+        System.out.println(str);
         out.write(str.getBytes());  
         out.flush();
         
@@ -92,12 +119,38 @@ public class Test {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));  
                 String temp = "";  
                 while ((temp = reader.readLine()) != null) {  
-                    System.out.println("server response:" + temp);
+                    System.out.println("server response: " + temp);
                 }
                 reader.close();  
                 in.close();  
                 urlConn.disconnect();  
             }  
         }  
-    }  
+    }*/
+    	URL url = new URL("http://127.0.0.1/faces/recognition/compare");  
+        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
+        urlConn.setDoOutput(true);  
+        urlConn.setDoInput(true);             
+        
+        urlConn.setRequestMethod("POST");
+        OutputStream out = urlConn.getOutputStream();
+        String str = "para1=1&para2=2";
+        System.out.println(str);
+        out.write(str.getBytes());  
+        out.flush();
+        
+        
+        if(urlConn.getContentLength() != -1) {  
+            if (urlConn.getResponseCode() == 200) {  
+                InputStream in = urlConn.getInputStream();  
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  
+                String temp = "";  
+                while ((temp = reader.readLine()) != null) {  
+                    System.out.println("server response: " + temp);
+                }
+                reader.close();  
+                in.close();  
+                urlConn.disconnect();  
+            }  
+        }  }
 }  

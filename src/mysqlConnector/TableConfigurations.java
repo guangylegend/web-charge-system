@@ -9,9 +9,14 @@ public final class TableConfigurations {
 	 * 2. services
 	 * 3. user_services
 	 * 4. userLog
+	 * 5. servicePara - (serviceId,paraName,paraType)
 	 */
 	static ArrayList<Table> tables = new ArrayList<Table>();
-	static String[] tableNames = new String[]{"accounts","services","user_services","userLog"};
+	static String[] tableNames = new String[]{"accounts"
+									,"services"
+									,"user_services"
+									,"userLog"
+									,"servicePara"};
 	static boolean first = true ;
 	
 	public static void generateAllTables() {
@@ -25,10 +30,11 @@ public final class TableConfigurations {
 		String INT = "INT";
 		
 		/*
-		 * accounts table
+		 * Account table
+		 * One user per row
 		 */
 		Table accountTable = new Table(tableNames[0]);
-		accountTable.addSchema("userId", INT, true, false);
+		accountTable.addSchemaWithAutoIncrease("userId", INT);	// unique userId will be set automaticlly	
 		accountTable.addSchema("userName", varchar255);	//	The real name of user
 		accountTable.addSchema("loginName", varchar255, false, true, true);	//	Account name
 		accountTable.addSchema("password", varchar255);	//	Encrypted password
@@ -45,8 +51,8 @@ public final class TableConfigurations {
 		 * services table
 		 */
 		Table services = new Table(tableNames[1]);
-		services.addSchema("serviceId", INT, true, false);
-		services.addSchema("serviceName", varchar255);
+		services.addSchemaWithAutoIncrease("serviceId", INT);
+		services.addSchema("serviceName", varchar255, false, false, true);
 		services.addSchema("servicePort", INT);
 		tables.add(services);
 		
@@ -63,10 +69,20 @@ public final class TableConfigurations {
 		 * user-log table
 		 */
 		Table userLog = new Table(tableNames[3]);
-		userLog.addSchema("logId", INT, true, false);
+		userLog.addSchemaWithAutoIncrease("logId", INT);
 		userLog.addSchema("userId", INT, false, true);
 		userLog.addSchema("time", "DATE", false, true);
 		userLog.addSchema("Log", varchar255);	//	TODO log??
 		tables.add(userLog);
+		
+		
+		/*
+		 * service-parameters table
+		 */
+		Table servicePara = new Table(tableNames[4]);
+		servicePara.addSchema("serviceId", INT, false, true);
+		servicePara.addSchema("paraName", varchar255);
+		servicePara.addSchema("paraType", varchar255);
+		tables.add(servicePara);
 	}
 }

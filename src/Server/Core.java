@@ -25,8 +25,6 @@ public class Core extends Thread {
 		UserInfo user = null;
 		try {
 			user = db.getUserInfo(request.loginName);
-		} catch (UnknownException e) {
-			return response.setContent("Database error: " + e.getMessage()).toString();
 		} catch (SQLException e) {
 			return response.setContent("Database error: " + e.getMessage()).toString();
 		}
@@ -50,7 +48,7 @@ public class Core extends Thread {
 			return;
 		}
 		while (true) {
-			//IpWhiteList
+			IpWhiteList = new HashSet<String>();
 			try {
 				Thread.sleep(10000);
 			} catch (Exception e) {
