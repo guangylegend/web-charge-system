@@ -8,10 +8,10 @@ public final class TableConfigurations {
 	 * Table lists:
 	 * 0. accounts;
 	 * 1. services - (serviceId,serviceName,servicePort,servicefee);
-	 * 2. user_services - (loginName,serviceName,fee);
-	 * 3. userLog;
+	 * 2. user_services - (userName,serviceName,fee);
+	 * 3. apiLog - (logId,userName,time,log);
 	 * 4. servicePara - (serviceName,paraName,paraType);
-	 * 5. ipWhiteList;
+	 * 5. ipWhiteList - (ip);
 	 */
 	static String[] tableNames = new String[]{"accounts"
 									,"services"
@@ -28,8 +28,9 @@ public final class TableConfigurations {
 		first = false;
 		
 		String varchar255 = "VARCHAR(255)";
-		String varcharMAX = "VARCHAR(MAX)";
+		String varcharMAX = "VARCHAR(8000)";
 		String INT = "INT";
+		String LONG = "BIGINT";
 		
 		/*
 		 * Account table
@@ -37,8 +38,8 @@ public final class TableConfigurations {
 		 */
 		Table accountTable = new Table(tableNames[0]);
 		accountTable.addSchemaWithAutoIncrease("userId", INT);	// unique userId will be set automaticlly	
-		accountTable.addSchema("userName", varchar255);	//	The real name of user
-		accountTable.addSchema("loginName", varchar255, false, true, true);	//	Account name
+		accountTable.addSchema("nickName", varchar255);	//	The real name of user
+		accountTable.addSchema("userName", varchar255, false, true, true);	//	Account name
 		accountTable.addSchema("password", varchar255);	//	Encrypted password
 		accountTable.addSchema("email", varchar255);
 		accountTable.addSchema("companyAddress", varchar255);
@@ -47,6 +48,10 @@ public final class TableConfigurations {
 		accountTable.addSchema("Money", INT);	//	Money should be integer by default
 		accountTable.addSchema("priviligeLevel", INT);	//	Level 1,2,3.. for managers. Level 0 for users
 		accountTable.addSchema("ActiveOrNot", INT);		//	0 or 1
+		accountTable.addSchema("secretKey", varchar255);
+		accountTable.addSchema("companyName", varchar255);
+		accountTable.addSchema("phoneNumber", varchar255);
+		
 		tables.add(accountTable);
 		
 		/*
@@ -63,7 +68,7 @@ public final class TableConfigurations {
 		 * user-service table
 		 */
 		Table userToServices = new Table(tableNames[2]);
-		userToServices.addSchema("loginName", varchar255, false, true, true);
+		userToServices.addSchema("userName", varchar255, false, true, true);
 		userToServices.addSchema("serviceName", varchar255, false, true, true);
 		userToServices.addSchema("fee", INT);
 		tables.add(userToServices);
@@ -71,12 +76,12 @@ public final class TableConfigurations {
 		/*
 		 * user-log table
 		 */
-		Table userLog = new Table(tableNames[3]);
-		userLog.addSchemaWithAutoIncrease("logId", INT);
-		userLog.addSchema("userName", INT, false, true, true);
-		userLog.addSchema("time", "DATE", false, true);
-		userLog.addSchema("Log", varchar255);	//	TODO log??
-		tables.add(userLog);
+		Table apiLog = new Table(tableNames[3]);
+		apiLog.addSchemaWithAutoIncrease("logId", LONG);
+		apiLog.addSchema("userName", varchar255, false, true, true);
+		apiLog.addSchema("date", "DATE", false, true);
+		apiLog.addSchema("log", varcharMAX);	//	TODO log??
+		tables.add(apiLog);
 		
 		
 		/*

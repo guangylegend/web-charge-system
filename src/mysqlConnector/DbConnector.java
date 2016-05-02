@@ -75,23 +75,23 @@ public class DbConnector {
 		
 		System.out.println("Tests user register....");
 		Common.UserInfo user = new Common.UserInfo();
+		user.nickName = "hehe";
 		user.userName = "hehe";
-		user.loginName = "hehe";
 		user.password = "123123";
 		this.inputUserRegister(user);
 		
 		user = new Common.UserInfo();
+		user.nickName = "haha";
 		user.userName = "haha";
-		user.loginName = "haha";
 		user.password = "123qwe";
 		this.inputUserRegister(user);
 		
 		System.out.println("Tests read user infomations....");
 		user = this.getUserInfo("haha");
-		//System.err.println(user.userId + " " + user.userName);
+		//System.err.println(user.userId + " " + user.nickName);
 		
 		user = this.getUserInfo("hehe");
-		//System.err.println(user.userId + " " + user.userName);
+		//System.err.println(user.userId + " " + user.nickName);
 		
 		
 		this.inputNewService("service0");
@@ -149,8 +149,8 @@ public class DbConnector {
 	}
 	
 	/**
-	 * Register a new user in database with 0.00 money
-	 * @param user Not all fields are needed. loginName, password must be included
+	 * Register a new user in database with 0.00 money. If privilege is null, then 2 will be set by default.
+	 * @param user Not all fields are needed. userName, password must be included
 	 * @return true if register success, false if this userInfo is invalid
 	 * @throws SQLException 
 	 */
@@ -163,7 +163,7 @@ public class DbConnector {
 		if ( user.priviligeLevel == null )
 			user.priviligeLevel = new Integer(2) ;
 		
-		if ( user.loginName == null || user.password == null ) {
+		if ( user.userName == null || user.password == null ) {
 			return false;
 		}
 		if ( user.userId != null )
@@ -171,7 +171,7 @@ public class DbConnector {
 		/**
 		 * Avoid SQL Injection Attack
 		 */
-		if ( securityCheck(user.loginName) && securityCheck(user.password) ) {
+		if ( securityCheck(user.userName) && securityCheck(user.password) ) {
 			String s = "INSERT INTO " + TableConfigurations.tableNames[0]
 					+ user.getColumnNameStatement()
 					+ " VALUES " + user.getValueStatement();
@@ -182,22 +182,22 @@ public class DbConnector {
 			return false;
 	}
 	/**
-	 * When user login, add a log in database for this login
+	 * Add a API-called log. The log.logId should be null, otherwise will return false
 	 * @return true if success
+	 * @throws SQLException 
 	 */
-	public boolean inputUserLogin(String loginName) {
-		//@TODO
-		return true;
-	}
-	/**
-	 * When user call a service, add a log in database for this calling
-	 * @param userName
-	 * @param serviceName
-	 * @return
-	 */
-	public boolean inputUserCallService(String loginName, String serviceName) {
-		//!TODO
-		return true;
+	public boolean inputAPILog(Common.APILog log) throws SQLException {
+		
+		if ( log.logId != null )
+			return false;
+		
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "INSERT INTO " + TableConfigurations.tableNames[3]
+				+ log.getColumnNameStatement() + " VALUES "
+				+ log.getValueStatement();
+		System.err.println(s);
+		return stmt.execute(s);
 	}
 	/**
 	 * Add a new IP into white list
@@ -215,6 +215,16 @@ public class DbConnector {
 
 		return stmt.execute(s);
 		
+	}
+	
+	public boolean deleteWhiteList(Common.IP ip) throws SQLException {
+		Connection con = this.conectionToDB();
+
+		Statement stmt = con.createStatement();
+		String s = "DELETE FROM " + TableConfigurations.tableNames[5]	//	service table
+				+ " WHERE ip = " + "'" + ip + "'";
+
+		return stmt.execute(s);
 	}
 	/**
 	 * Create a new service in db with empty parameter
@@ -257,17 +267,17 @@ public class DbConnector {
 	}
 	/**
 	 * Set a user's money into @money
-	 * @param loginName
+	 * @param userName
 	 * @param money
 	 * @return true if success
 	 * @throws SQLException
 	 */
-	public boolean setUserMoney(String loginName, int money) throws SQLException {
+	public boolean setUserMoney(String userName, int money) throws SQLException {
 		Connection con = this.conectionToDB();
 		Statement stmt = con.createStatement();
 		String s = " UPDATE " + TableConfigurations.tableNames[0]
 				+ " SET Money = " + money
-				+ " WHERE loginName = " + "'" + loginName + "'"; 
+				+ " WHERE userName = " + "'" + userName + "'"; 
 		return stmt.execute(s);
 	}
 	public boolean setServiceFee(String serviceName, int cost) throws SQLException {
@@ -280,19 +290,19 @@ public class DbConnector {
 	}
 	/**
 	 * 
-	 * @param loginName 
+	 * @param userName 
 	 * @return information for this user if existed. null if user not found 
 	 * @throws SQLException
 	 */
-	public Common.UserInfo getUserInfo(String loginName) throws SQLException{
+	public Common.UserInfo getUserInfo(String userName) throws SQLException{
 		Connection con = this.conectionToDB();
 
 		Statement stmt = con.createStatement();
 		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
 								+ TableConfigurations.tableNames[0]
 								+ " WHERE "
-								+ " loginName = " 
-								+ "'" + loginName + "'");	//	fetch results from account table
+								+ " userName = " 
+								+ "'" + userName + "'");	//	fetch results from account table
 		
 		int cnt = 0 ;
 		Common.UserInfo user = new Common.UserInfo();
@@ -302,8 +312,8 @@ public class DbConnector {
 			//System.err.println(res.toString());
 			
 			user.userId = res.getInt(1);
-			user.userName = res.getString(2); //	The real name of user
-			user.loginName = res.getString(3);	//	Account name
+			user.nickName = res.getString(2); //	The real name of user
+			user.userName = res.getString(3);	//	Account name
 			user.password = res.getString(4); //	Encrypted password
 			user.email = res.getString(5);
 			user.companyAddress = res.getString(6);
@@ -312,20 +322,16 @@ public class DbConnector {
 			user.Money = res.getInt(9);	//	Money = 1 <==> 0.01 RMB
 			user.priviligeLevel = res.getInt(10);	//	Level 1,2,3.. for managers. Level 0 for users
 			user.activeOrNot = res.getBoolean(11); //	0 or 1
+			user.secretKey = res.getString(12);
+			user.companyName = res.getString(13);
+			user.phone = res.getString(14);
+			
 		}
 		if ( cnt == 0 )
 			return null;
 		return user;
 	}
-	/**
-	 * 
-	 * @param userName
-	 * @return a list of logs
-	 */
-	public ArrayList<Common.UserLog> getUserLog(String longinName) {
-		ArrayList<Common.UserLog>res = new ArrayList<Common.UserLog>();
-		return res;	//@TODO
-	}
+	
 	/**
 	 * 
 	 * @param serviceName
@@ -396,7 +402,7 @@ public class DbConnector {
 	 * @return true if this ip is contained in the white list
 	 * @throws SQLException 
 	 */
-	public boolean containedByWhiteList( Common.IP ip ) throws SQLException {
+	public boolean getContainedByWhiteList( Common.IP ip ) throws SQLException {
 		Connection con = this.conectionToDB();
 		Statement stmt = con.createStatement();
 		// Fetch serviceIds
@@ -406,6 +412,33 @@ public class DbConnector {
 								+ " ip = " 
 								+ "'" + ip + "'");	
 		return res.next();
+	}
+	
+	/**
+	 * Return an API log for a specific logid
+	 * @param logid
+	 * @return null if no log for this logid.
+	 * @throws SQLException
+	 */
+	public Common.APILog getAPILogByLogid( long logid ) throws SQLException {
+		Common.APILog log = new Common.APILog();
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		// Fetch serviceIds
+		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
+								+ TableConfigurations.tableNames[3]
+								+ " WHERE "
+								+ " logid = " 
+								+ logid);	
+		if ( res.next() ) {
+			log.userName = res.getString("userName");
+			log.logId = res.getLong("logId");
+			log.date = res.getDate("date");
+			log.log = res.getString("log");
+			return log;
+		}
+		else
+			return null;
 	}
 }
 

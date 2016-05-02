@@ -17,14 +17,14 @@ public class Main {
 		
 		System.out.println("Tests user register....");
 		Common.UserInfo user = new Common.UserInfo();
+		user.nickName = "hehe";
 		user.userName = "hehe";
-		user.loginName = "hehe";
 		user.password = "123123";
 		con.inputUserRegister(user);
 		
 		user = new Common.UserInfo();
+		user.nickName = "haha";
 		user.userName = "haha";
-		user.loginName = "haha";
 		user.password = "123qwe";
 		user.email = "haha@gmail.com";
 		user.companyAddress = "nonono";
@@ -45,6 +45,8 @@ public class Main {
 		System.err.println(user);
 		
 		
+		System.out.println("Tests insert and read service");
+		
 		con.inputNewService("service0");
 		con.inputNewParameterIntoService("service0", "para1", "string");
 		con.inputNewParameterIntoService("service0", "para2", "int");
@@ -56,8 +58,22 @@ public class Main {
 		for ( Common.Service s: servicelist) 
 			System.err.println(s);
 		
-		//System.out.println("Tests droping database....");
-		//clear();
+		System.out.println("Tests insert and delete ip in white list");
+		con.inputWhiteList(new Common.IP("202.120.61.1"));
+		System.err.println( "IP 202.120.61.1 (true/false) "+ con.getContainedByWhiteList(new Common.IP("202.120.61.1")) );
+		con.deleteWhiteList(new Common.IP("202.120.61.1"));
+		System.err.println( "IP 202.120.61.1 (true/false) "+ con.getContainedByWhiteList(new Common.IP("202.120.61.1")) );
+		
+		
+		System.out.println("Tests insert and read APIlog");
+		Common.APILog log = new Common.APILog();
+		log.userName = "hehe";
+		log.log = "Log number 0 for user hehe";
+		log.date = new Date();
+		con.inputAPILog(log);
+		
+		log = con.getAPILogByLogid(1);
+		System.err.println(log);
 		
 		System.out.println("All testcases done!");
 	}
