@@ -102,7 +102,7 @@ public class Test {
         OutputStream out = urlConn.getOutputStream();
         String pic1 = null, pic2 = null;
         try {
-        	pic2 = GetImageStr("D:\\picture\\Î´ÃüÃû.jpg");
+        	pic2 = GetImageStr("D:\\picture\\.jpg");
         	pic1 = GetImageStr("D:\\picture\\IMG_8630.jpg");
         } catch (Exception e) {
         	e.printStackTrace();

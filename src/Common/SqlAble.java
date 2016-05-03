@@ -24,7 +24,7 @@ public class SqlAble {
 		return s ;
 	}
 	/**
-	 * (col1=value1,col2=value2,...£©
+	 * (col1=value1,col2=value2,...)
 	 * @return WHERE statement for sql 
 	 */
 	public String getWhereStatement() {
