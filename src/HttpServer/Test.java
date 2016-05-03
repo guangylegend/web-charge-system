@@ -93,7 +93,7 @@ public class Test {
     }
     
     public static void starthttpWork() throws Exception {    
-        URL url = new URL("http://139.196.155.136:8080/TestNewPlat/OneToOne");  
+        /*URL url = new URL("http://139.196.155.136:8080/TestNewPlat/OneToOne");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
@@ -126,8 +126,8 @@ public class Test {
                 urlConn.disconnect();  
             }  
         }  
-    }
-    	/*URL url = new URL("http://127.0.0.1/faces/recognition/compare");  
+    }*/
+    	URL url = new URL("http://127.0.0.1/faces/recognition/compare");  
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
@@ -152,5 +152,5 @@ public class Test {
                 urlConn.disconnect();  
             }  
         }
-    }*/
+    }
 }  

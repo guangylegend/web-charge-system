@@ -11,7 +11,7 @@ public class Request {
 	}
 	
 	public SessionInfo session_info;
-	//public Map<String, Object> image_info, options_info;
+	public Map<String, Object> image_info, options_info;
 	public String ip;
 	public Date date;
 	public String api;

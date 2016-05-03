@@ -33,7 +33,12 @@ public class Core extends Thread {
 			response.status = "";
 		}
 		return response.toString();*/
-		return null;
+		try {
+			Thread.sleep(500);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "yes";
 	}
 	
 	@Override
