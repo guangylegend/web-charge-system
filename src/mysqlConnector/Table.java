@@ -14,11 +14,32 @@ public class Table {
 		String columnName , type;
 		boolean isPrimaryKey = false, isIndex = false;
 		boolean isUnique = false;
+		boolean notNull = false;
 		boolean autoInc = false;
 		
 		Schema(String _columnName, String _type) {
 			this.columnName = new String(_columnName);
 			this.type = new String(_type);
+		}
+		Schema setPrimaryKey() {
+			isPrimaryKey = true;
+			return this;
+		}
+		Schema setIndex() {
+			isIndex = true;
+			return this;
+		}
+		Schema setUnique() {
+			isUnique = true;
+			return this;
+		}
+		Schema setAutoInc() {
+			autoInc = true;
+			return this;
+		}
+		Schema setNotNull() {
+			notNull = true;
+			return this;
 		}
 	};
 	
@@ -27,36 +48,17 @@ public class Table {
 	Table(String name) {
 		tableName = new String(name);
 	}
-	void setName(String name) {
+	Table setName(String name) {
 		tableName = new String(name);
+		return this;
 	}
-	void addSchema( String name, String type) {
+	Schema addSchema( String name, String type) {
 		Schema sch = new Schema(name,type);
 		sch.isPrimaryKey = false;
 		sch.isIndex = false;
 		schema.add( sch );
+		return sch;
 	}
-
-	void addSchema( String name, String type, boolean isPrimaryKey, boolean isIndex ) {
-		Schema sch = new Schema(name,type);
-		sch.isPrimaryKey = isPrimaryKey;
-		sch.isIndex = isIndex;
-		schema.add( sch );
-	}
-	
-	void addSchema( String name, String type, boolean isPrimaryKey, boolean isIndex, boolean isUnique ) {
-		Schema sch = new Schema(name,type);
-		sch.isPrimaryKey = isPrimaryKey;
-		sch.isIndex = isIndex;
-		sch.isUnique = isUnique;
-		schema.add( sch );
-	}
-	void addSchemaWithAutoIncrease(String name, String type) {
-		Schema sch = new Schema(name,type);
-		sch.autoInc = true;
-		schema.add(sch);
-	}
-	
 	String getCreatTableStatement() {
 		String res = "CREATE TABLE ";
 		ArrayList<String> indexList = new ArrayList<String>();
@@ -72,6 +74,9 @@ public class Table {
 				res += " PRIMARY KEY";
 			else if (schema.get(i).isIndex)
 				indexList.add(schema.get(i).columnName);
+			
+			if ( schema.get(i).notNull )
+				res += " NOT NULL";
 			
 			if ( schema.get(i).isUnique)
 				UniqueList.add(schema.get(i).columnName);

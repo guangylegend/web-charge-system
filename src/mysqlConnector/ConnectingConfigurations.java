@@ -3,16 +3,16 @@ package mysqlConnector;
  * Connection settings
  */
 public final class ConnectingConfigurations {
-	static String hostIp = "139.196.152.71";
-	static String userName = "user";
-	static String password = "123qwe";
-	static String dbName = "test";
+	static String[] hostIp = {"139.196.242.196","139.196.242.221"};
+	static String userName = "sync";
+	static String password = "Minivision-2015";
+	static String dbName = "Minivision";
 	
-	static public String getConnectingUrl() {
-		return "jdbc:mysql://" + hostIp ;
+	static public String getConnectingUrl(int index) {
+		return "jdbc:mysql://" + hostIp[index] ;
 	}
-	static public String getConnectingUrlWithDatabaseName() {
-		return getConnectingUrl() + "/" + dbName;
+	static public String getConnectingUrlWithDatabaseName(int index) {
+		return getConnectingUrl(index) + "/" + dbName;
 	}
 	static public String getConnectingUserName() {
 		return userName;
@@ -22,5 +22,11 @@ public final class ConnectingConfigurations {
 	}
 	static public String getConnectingDatabaseName() {
 		return dbName;
+	}
+	static public int getHostSize() {
+		return hostIp.length;
+	}
+	static public String getHostIp(int index) {
+		return hostIp[index];
 	}
 }

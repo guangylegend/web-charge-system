@@ -1,6 +1,8 @@
 package Common;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class SqlAble {
@@ -109,5 +111,30 @@ public class SqlAble {
 			res = res.substring(0, res.length()-1);
 		return "("+res+")";
 	}
-
+	public boolean fetchFromResultSet( ResultSet res ) {
+		
+		Field[] fileds = this.getClass().getFields();
+		for ( Field field : fileds ) {
+			try{
+				if ( field.getType().isAssignableFrom(Integer.class) )
+					field.set(this, res.getInt(field.getName()));
+				else if ( field.getType().isAssignableFrom(String.class) )
+					field.set(this, res.getString(field.getName()));
+				else if ( field.getType().isAssignableFrom(Date.class) )
+					field.set(this, res.getDate(field.getName()));
+				else
+					System.err.print("unhandled type of field!");
+				
+			} catch ( SQLException e ) {
+				e.printStackTrace();
+				return false;
+			}catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.err.println("Impossible illegal access");
+				return false;
+			}
+		}
+		return true;
+	}
 }
