@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import Common.ServicePara;
+import Common.machineList;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
@@ -16,6 +17,7 @@ public class Main {
 		
 		System.out.println("Tests initialiing database....");
 		con.init();
+		
 		
 		System.out.println("Tests user register....");
 		Common.UserInfo user = new Common.UserInfo();
@@ -45,11 +47,27 @@ public class Main {
 		c = con.getCustomerInfo("new1");
 		System.err.println(c);
 		
-		System.out.println("Tests insert and read service");
+		System.out.println("Tests input 2 machines......");
+		Common.machineList machine = new machineList();
+		machine.ip = "192.168.0.1";
+		con.inputNewMachine(machine);
+		machine.ip = "192.168.0.2";
+		con.inputNewMachine(machine);
+		
+		
+		System.out.println("Tests insert and read service.....");
 		con.inputNewService(new Common.Service("service0"));
 		con.setServiceFee("service0", 998);
 		Common.Service service = con.getServiceByName("service0");
 		System.err.println(service);
+		
+		System.out.println("Tests loadbalance......");
+		Common.machineList l = con.getNextFreeMachine("service0");
+		System.err.println(l);
+		l = con.getNextFreeMachine("service0");
+		System.err.println(l);
+		l = con.getNextFreeMachine("service0");
+		System.err.println(l);
 		
 		System.out.println("Tests insert and read para");
 		Common.ServicePara para = new Common.ServicePara();

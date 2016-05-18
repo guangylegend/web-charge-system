@@ -15,6 +15,8 @@ import Common.CustomerInfo;
 import Common.Service;
 import Common.UserAccessOperation;
 import Common.UserInfo;
+import Common.loadbalance;
+import Common.machineList;
 
 import java.sql.ResultSet;
 
@@ -250,9 +252,9 @@ void createRelations() throws SQLException {
 					+ customer.getColumnNameStatement()
 					+ " VALUES " + customer.getValueStatement();
 			//System.out.println(s);
-			boolean res = stmt.execute(s);
+			int res = stmt.executeUpdate(s);
 			con.close();
-			return res;
+			return res==1;
 		}
 		else {
 			con.close();
@@ -274,9 +276,9 @@ void createRelations() throws SQLException {
 					+ user.getColumnNameStatement()
 					+ " VALUES " + user.getValueStatement();
 			//System.out.println(s);
-			boolean res = stmt.execute(s);
+			int res = stmt.executeUpdate(s);
 			con.close();
-			return res;
+			return res==1;
 		}
 		else {
 			con.close();
@@ -292,15 +294,31 @@ void createRelations() throws SQLException {
 	public boolean inputNewService(Common.Service service) throws SQLException {
 		
 		Connection con = this.conectionToDB();
-		Statement stmt = con.createStatement();
+		
+		con.setAutoCommit(false);
+		
 		String s = "INSERT INTO " + TableConfigurations.tableNames[2]	//	service table
 				+ service.getColumnNameStatement()
 				+ " VALUES " + service.getValueStatement();
-
-		//	Insert a new record into service table
-		boolean res = stmt.execute(s);
-		con.close();
-		return res;
+		con.createStatement().executeUpdate(s);		
+		
+		Common.loadbalance b = new loadbalance();
+		b.machine_id = 1 ;
+		b.service_name = new String(service.service_name);
+		String s2 = "INSERT INTO " + TableConfigurations.tableNames[8]	//	service table
+				+ b.getColumnNameStatement()
+				+ " VALUES " + b.getValueStatement();
+		con.createStatement().executeUpdate(s2);
+		
+		try {
+			con.commit();
+			con.close();
+			return true;
+		} catch( SQLException ex ) {
+			con.rollback();
+			con.close();
+			throw ex;
+		}
 	}
 	/**
 	 * Insert a new parameter to an existed service
@@ -317,9 +335,30 @@ void createRelations() throws SQLException {
 				+ " VALUES " + para.getValueStatement();
 		
 		//	Insert a new record into service table
-		boolean res = stmt.execute(s);
+		int res = stmt.executeUpdate(s);
 		con.close();
-		return res;
+		return res==1;
+	}
+	
+	
+	/**
+	 * a new machine with service provided, you can call service API in this machine
+	 * @param machine
+	 * @return true if success
+	 * @throws SQLException
+	 */
+	public boolean inputNewMachine( Common.machineList machine ) throws SQLException {
+		Connection con = this.conectionToDB();
+		
+		Statement stmt = con.createStatement();
+		String s = "INSERT INTO " + TableConfigurations.tableNames[7]
+				+ machine.getColumnNameStatement()
+				+ " VALUES " + machine.getValueStatement();
+		
+		//	Insert a new record into service table
+		int res = stmt.executeUpdate(s);
+		con.close();
+		return res==1;
 	}
 	/**
 	 * Set a customer's money into @money
@@ -470,6 +509,62 @@ void createRelations() throws SQLException {
 		}
 		con.close();
 		return serviceList;
+	}
+	
+	/***
+	 * Return a free machine accroding to service name and automatically increase machines'id for this service.
+	 * @param serviceName
+	 * @return
+	 * @throws SQLException
+	 */
+	public Common.machineList getNextFreeMachine(String serviceName) throws SQLException {
+		Connection con = this.conectionToDB();
+		
+		try {
+			con.setAutoCommit(false);
+			//	load current free machine
+			Common.loadbalance l = new loadbalance();
+			Common.machineList machine = new machineList();
+			
+			ResultSet r1 = con.createStatement().executeQuery("SELECT * FROM " 
+					+ TableConfigurations.tableNames[8]
+							+ " WHERE service_name = " + "'" + serviceName + "'");
+			if ( r1.next() ) {
+				l.fetchFromResultSet( r1 );
+				
+				ResultSet rt = con.createStatement().executeQuery("SELECT * FROM " 
+						+ TableConfigurations.tableNames[7]
+								+ " WHERE machine_id = " + l.machine_id);
+				if ( rt.next() ) {
+					machine.fetchFromResultSet(rt);
+				}
+				else { con.close(); return null; }
+			}
+			else {
+				con.close();
+				return null;
+			}
+			//	load machine size
+			ResultSet r2 = con.createStatement().executeQuery("SELECT * FROM " + TableConfigurations.tableNames[7]);
+			int cnt = 0;
+			while (r2.next()) ++cnt;
+			if ( cnt == 0 ) {
+				con.close();return null;
+			}
+			//	update free machine
+			String s = " UPDATE " + TableConfigurations.tableNames[8]
+					+ " SET machine_id = " + ((l.machine_id)%cnt+1)
+					+ " WHERE service_name = " + "'" + serviceName + "'"; 
+			con.createStatement().executeUpdate( s );
+			con.commit();
+			con.close();
+			return machine;
+		}
+		catch(SQLException ex) {
+			con.rollback();
+			con.close();
+			throw ex;
+		}
 	}
 }
 

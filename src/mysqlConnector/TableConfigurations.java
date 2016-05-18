@@ -13,6 +13,8 @@ public final class TableConfigurations {
 	 * 4. service_para - ();
 	 * 5. user_type_list - (user_type,description)
 	 * 6. user_access - ();
+	 * 7. machine_list - (ip,machine_id)
+	 * 8. load_balance - (service_name,machine_id)
 	 */
 	static String[] tableNames = new String[]{"credit_user"
 									,"credit_customer"
@@ -21,6 +23,8 @@ public final class TableConfigurations {
 									,"service_para"
 									,"user_type_list"
 									,"user_access"
+									,"machine_list"
+									,"load_balance"
 									};
 	static boolean first = true ;
 	
@@ -123,7 +127,18 @@ public final class TableConfigurations {
 				userAccess.addSchema("service_analysis",INT); //	服务统计
 				userAccess.addSchema("service_details",INT); //	使用详情
 				tables.add(userAccess);
-
+			}
+			else if ( i.equals("machine_list")) {
+				Table machine_id = new Table(i);
+				machine_id.addSchema("machine_id", INT).setAutoInc();
+				machine_id.addSchema("ip", varchar255);
+				tables.add(machine_id);
+			}
+			else if ( i.equals("load_balance")) {
+				Table table = new Table(i);
+				table.addSchema("machine_id", INT);
+				table.addSchema("service_name", varchar255);
+				tables.add(table);
 			}
 		}
 	}
