@@ -18,6 +18,9 @@ public class Service extends SqlAble{
 	public String service_speCharging;
 	public String service_nickname;
 	
+	public String external_URL;
+	public String internal_URL;
+	
 	public Service() {}
 	public Service(String name) {
 		service_name = new String(name);

@@ -85,6 +85,9 @@ public final class TableConfigurations {
 				services.addSchema("service_guidePrice", INT);
 				services.addSchema("service_speCharging", varcharMAX);
 				services.addSchema("service_nickname", varchar255);
+				services.addSchema("external_URL", varchar255);
+				services.addSchema("internal_URL", varchar255);
+				
 				tables.add(services);
 			}
 			
