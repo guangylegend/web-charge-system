@@ -13,6 +13,7 @@ public class Main {
 	}
 	public static void Test() throws SQLException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException {
 			
+		long startTime, endTime;
 		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
 		
 		System.out.println("Tests initialiing database....");
@@ -24,7 +25,12 @@ public class Main {
 		user.user_loginName = "admin1";
 		user.user_password = "administrator1";
 		user.user_type = 0;
+		
+		startTime = System.currentTimeMillis();
 		con.inputNewUser(user);
+		endTime = System.currentTimeMillis();
+		System.err.println("elasped: " + (endTime-startTime) + " ms");
+		
 		
 		System.out.println("Tests read user infomations....");
 		user = con.getUserInfo("admin1");
