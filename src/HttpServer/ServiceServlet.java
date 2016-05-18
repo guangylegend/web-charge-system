@@ -2,31 +2,40 @@ package HttpServer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.ServletException; 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet; 
 import javax.servlet.http.HttpServletRequest; 
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import Config.Config;
 import Server.Core;
 import Server.Request;
+import Server.RequestInfo;
+import Server.Response;
+import Tool.Logger;
 
 public class ServiceServlet extends HttpServlet {
-	private int cnt = 0;
-	private static final long serialVersionUID = 2L;
-	private Core core;
-	private String servlet;
+	static final long serialVersionUID = 2L;
 	
-	public ServiceServlet(Core core, String servlet) throws Exception {
+	Core core; //ServerCore
+	int serviceId;
+	
+	public ServiceServlet(Core core, int serviceId) throws Exception {
 		this.core = core;
-		this.servlet = servlet;
+		this.serviceId = serviceId;
     }
 	
+	/*
+	 * get real IP
+	 */
 	public String getIp(HttpServletRequest request) {
 		String ip = request.getHeader("x-forwarded-for");
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -41,27 +50,62 @@ public class ServiceServlet extends HttpServlet {
 		return ip;
 	}
 
+	/*
+	 * handle post request
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String TimeString = time.format(new java.util.Date());
-		System.out.println("No."+ (++cnt) +" POST "+ TimeString + ' ' + request.getRemoteAddr() + ' ' + request.getRemoteHost());
+
+    	RequestInfo info = new RequestInfo();
+    	info.ip = getIp(request);
+    	info.time = core.getTime();
+    	info.serviceId = serviceId;
 		
-		response.setCharacterEncoding("UTF-8"); 
-        response.setContentType("text/html"); 
-    	response.setStatus(HttpServletResponse.SC_OK);
+		//response.setCharacterEncoding("UTF-8"); 
+		//response.setContentType("text/html;charset=utf-8");
     	
-    	Enumeration<String> names = request.getParameterNames();
-    	if (names.hasMoreElements()) {
-    		Request req = new Request();
-    		req.json = names.nextElement();
-    		req = new Gson().fromJson(req.json, Request.class);
-    		req.date = new Date();
-    		req.ip = getIp(request);
-    		req.api = servlet;
-        	response.getWriter().println(core.handleRequest(req));
+    	/*
+    	 * get post json
+    	 */
+    	ServletInputStream input = request.getInputStream();
+    	byte[] bytes = new byte[10000]; //buffer
+    	String json = "";
+    	while (true) {
+    		int length = input.read(bytes);
+    		if (length == -1) break;
+    		json += new String(bytes, 0, length);
+    		if (json.length() > Config.jsonLimitLength) {
+    			/*
+    			 * requset entity too large
+    			 */
+    			int code = HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;
+    			response.setStatus(code);
+    			Logger.log(new Response(info, code, "request entity too large").toString());
+    			return;
+    		}
+    	}
+    	info.json = json;
+    	
+    	Request req;
+    	try {
+    		req = Request.fromJson(json);
+    	} catch (Exception e) {
+    		/*
+    		 * request is not json
+    		 */
+    		int code = HttpServletResponse.SC_FORBIDDEN;
+    		response.setStatus(code);
+			Logger.log(new Response(info, code, "request is not json").toString());
+			return;
+    	}
+
+    	Response res = core.handleRequest(req, info);
+    	response.setStatus(res.status);
+    	if (res.status == HttpServletResponse.SC_OK) {
+    		response.getWriter().println(res.content);
+    		res.content = "session id " + res.info.sessionId;
+    		Logger.log(res.toString());
     	} else {
-    		//
-    		System.err.println("input format error");
-    	} 
+			Logger.log(res.toString());
+		}
     }
 }

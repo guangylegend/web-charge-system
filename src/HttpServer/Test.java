@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;  
 import java.net.HttpURLConnection;
 import java.net.URL;  
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -15,6 +18,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 
+import Server.test;
 import sun.misc.BASE64Encoder;
   
 public class Test {  
@@ -128,19 +132,26 @@ public class Test {
         }  
     }*/
     	URL url = new URL("http://127.0.0.1/faces/recognition/compare");  
-        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
+        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
         urlConn.setDoOutput(true);  
         urlConn.setDoInput(true);             
         
         urlConn.setRequestMethod("POST");
+		//urlConn.setRequestProperty("Content-Type", "text/plain; charset=utf-8");  
+		
         OutputStream out = urlConn.getOutputStream();
-        String str = "{\"hehe\":{\"user\":\"abc\",\"password\":\"123\"}}";
-        System.out.println(str);
+        //String str = "{\"hehe\":{\"user\":\"abc\",\"password\":\"123\"}}";
+        String str = test.GetImageStr("D:\\picture\\IMG_8630.jpg");
+        //String str = "123=456";
+        //System.out.println(str);
+        System.out.println(str.length());
         out.write(str.getBytes());  
         out.flush();
+        out.close();
         
-        if(urlConn.getContentLength() != -1) {  
-            if (urlConn.getResponseCode() == 200) {  
+        if(urlConn.getContentLength() != -1) {
+        	System.out.println("reponse code: " + urlConn.getResponseCode());
+            if (urlConn.getResponseCode() != 123456) {  
                 InputStream in = urlConn.getInputStream();  
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));  
                 String temp = "";  

@@ -1,21 +1,21 @@
 {
-"session_info":
+"session_info" :
 {
-"user" : "testone",
-"password" : "123"
+"user" : "test",
+"password" : "123456"
 },
 "image_info" :
 {
 "mode" : 1,
-"image1" : "¹þ¹þ",
+"image1" : "123",
 "image2" : "456"
 },
 "options_info" :
 {
 "auto_rotate" : true,
 "auto_flip" : true,
-"check_repo":false,
-"mode": "normal",
+"check_repo" : false,
+"mode" : "normal",
 "remove_watermark" : false,
 "true_negative_rate" : "99.99",
 "async" : false
