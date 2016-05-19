@@ -5,7 +5,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class SqlAble {
+public abstract class SqlAble implements Cloneable{
+	
+	SqlAble() {}
+	
+	abstract public String getTableName();
+	public Object Clone() {
+		try {
+			return clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		String s = "";
@@ -29,7 +43,7 @@ public class SqlAble {
 	 * (col1=value1,col2=value2,...£©
 	 * @return WHERE statement for sql 
 	 */
-	public String getWhereStatement() {
+	public String getSetStatement() {
 		String res = "";
 		Field[] fileds = this.getClass().getFields();
 		
@@ -60,7 +74,7 @@ public class SqlAble {
 		}
 		if ( res.endsWith(" and "))
 			res = res.substring(0, res.length()-5);
-		return "("+res+")";
+		return res;
 	}
 	/**
 	 * (col1,col2,col3,...)

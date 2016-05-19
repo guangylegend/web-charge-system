@@ -19,4 +19,8 @@ public class ServicePara extends SqlAble{
 		para_type = new String(t);
 		return this;
 	}
+	@Override
+	public String getTableName() {
+		return mysqlConnector.TableConfigurations.tableNames[4];
+	}
 }

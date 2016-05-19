@@ -15,4 +15,8 @@ public class UserTypeList extends SqlAble{
 		description = new String(t);
 		return this;
 	}
+	@Override
+	public String getTableName() {
+		return mysqlConnector.TableConfigurations.tableNames[5];
+	}
 }

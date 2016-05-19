@@ -19,4 +19,8 @@ public class UserAccessOperation extends SqlAble{
 	public Integer service_price_log;	//	定价查询
 	public Integer service_analysis;	//	服务统计
 	public Integer service_details;	//	使用详情
+	@Override
+	public String getTableName() {
+		return mysqlConnector.TableConfigurations.tableNames[6];
+	}
 }

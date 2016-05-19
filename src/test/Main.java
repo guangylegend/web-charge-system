@@ -6,11 +6,25 @@ import java.util.Date;
 
 import Common.APILog;
 import Common.ServicePara;
+import Common.UserInfo;
 import Common.machineList;
+import mysqlConnector.DbConnector;
+import mysqlConnector.generalDBAPI;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
 		Test();
+		//test2();
+	}
+	public static void test2() throws ClassNotFoundException, SQLException {
+		
+		Common.UserInfo u1 = new UserInfo();
+		
+		u1.user_loginName = "xiaoming";
+		
+		Common.UserInfo u2 = (UserInfo) u1.Clone();
+		u1.user_loginName = "xiaoa";
+		System.out.println(u2);
 	}
 	public static void Test() throws SQLException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException {
 			
@@ -104,6 +118,31 @@ public class Main {
 		ArrayList<Common.APILog> logList = new ArrayList<>();
 		logList = con.getApiLogByCustomerName("xiaoming");
 		System.err.println(logList);
+		
+		
+		System.out.println("Tests generalAPI ....");
+		generalDBAPI<Common.CustomerInfo> api = new generalDBAPI<Common.CustomerInfo>( Common.CustomerInfo.class );
+		
+		c = new Common.CustomerInfo();
+		c.customer_name = "new2";
+		c.customer_password = "123123";
+		c.customer_banlance = 100;
+		c.customer_contactName = "xiao ming";
+		c.customer_createdByUserId = con.getUserInfo("admin1").user_id;
+		api.executeInsert(c);
+		
+		ArrayList<Common.CustomerInfo> list = new ArrayList<Common.CustomerInfo>();
+		list = api.setOrderBy("customer_banlance")
+					.setTop(1).executeSelect();
+		
+		System.err.println(list);
+		
+		c = new Common.CustomerInfo();
+		c.customer_banlance = 1200;
+		api.clear().setWhere("customer_name=\'new2\'").executeUpdate(c);
+		list = api.clear().setOrderBy("customer_banlance")
+				.setTop(1).executeSelect();
+		System.err.println(list);
 		
 		System.out.println("All testcases done!");
 	}

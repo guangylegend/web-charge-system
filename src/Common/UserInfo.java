@@ -15,4 +15,8 @@ public class UserInfo extends SqlAble{
 	public String user_phoneNum;
 	public Integer user_type;
 	public String user_desc;	//	description
+	@Override
+	public String getTableName() {
+		return mysqlConnector.TableConfigurations.tableNames[0];
+	}
 }

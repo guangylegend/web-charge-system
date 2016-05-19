@@ -25,4 +25,8 @@ public class Service extends SqlAble{
 	public Service(String name) {
 		service_name = new String(name);
 	}
+	@Override
+	public String getTableName() {
+		return mysqlConnector.TableConfigurations.tableNames[2];
+	}
 }

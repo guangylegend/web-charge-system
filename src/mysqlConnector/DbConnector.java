@@ -1,5 +1,6 @@
 package mysqlConnector;
 
+import java.lang.reflect.Constructor;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +11,8 @@ import java.util.Date;
 
 import javax.security.auth.login.Configuration;
 import javax.sql.CommonDataSource;
+
+import com.sun.org.apache.bcel.internal.util.Class2HTML;
 
 import Common.APILog;
 import Common.CustomerInfo;
@@ -26,7 +29,7 @@ import java.sql.ResultSet;
 /**
  * 
  * @author chensqi
- * All you need is the interface of DbConnector
+ * Deprecated
  */
 public class DbConnector {
 	
@@ -48,7 +51,7 @@ public class DbConnector {
 				return false;
 		return true;
 	}
-	Connection conectionToDB() throws SQLException {
+	static Connection conectionToDB() throws SQLException {
 		
 		for ( int i = 0 ; i < ConnectingConfigurations.getHostSize() ; ++i ) {
 			
@@ -589,5 +592,7 @@ void createRelations() throws SQLException {
 		con.close();
 		return res;
 	}
+	
+	
 }
 

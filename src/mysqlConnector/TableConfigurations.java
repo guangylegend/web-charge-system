@@ -18,7 +18,7 @@ public final class TableConfigurations {
 	 * 8. load_balance - (service_name,machine_id)
 	 * 9. api_log - ();
 	 */
-	static String[] tableNames = new String[]{"credit_user"
+	static public String[] tableNames = new String[]{"credit_user"
 									,"credit_customer"
 									,"credit_service"
 									,"customer_service"

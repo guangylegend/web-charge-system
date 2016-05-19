@@ -13,4 +13,8 @@ public class CustomerInfo extends SqlAble{
 	public Integer customer_createdByUserId;
 	
 	public CustomerInfo() {}
+	@Override
+	public String getTableName() {
+		return mysqlConnector.TableConfigurations.tableNames[1];
+	}
 }
