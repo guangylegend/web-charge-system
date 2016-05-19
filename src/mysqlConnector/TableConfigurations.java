@@ -1,6 +1,7 @@
 package mysqlConnector;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public final class TableConfigurations {
 	static ArrayList<Table> tables = new ArrayList<Table>();
@@ -15,6 +16,7 @@ public final class TableConfigurations {
 	 * 6. user_access - ();
 	 * 7. machine_list - (ip,machine_id)
 	 * 8. load_balance - (service_name,machine_id)
+	 * 9. api_log - ();
 	 */
 	static String[] tableNames = new String[]{"credit_user"
 									,"credit_customer"
@@ -25,6 +27,7 @@ public final class TableConfigurations {
 									,"user_access"
 									,"machine_list"
 									,"load_balance"
+									,"api_log"
 									};
 	static boolean first = true ;
 	
@@ -34,8 +37,9 @@ public final class TableConfigurations {
 			return ;
 		first = false;
 		
+		String varchar30 = "VARCHAR(30)";
 		String varchar255 = "VARCHAR(255)";
-		String varcharMAX = "VARCHAR(8000)";
+		String varcharMAX = "VARCHAR(3000)";
 		String INT = "INT";
 		String LONG = "BIGINT";
 		
@@ -64,6 +68,7 @@ public final class TableConfigurations {
 				Table customerTable = new Table(i);
 				customerTable.addSchema("customer_id", INT).setAutoInc();
 				customerTable.addSchema("customer_name", varchar255).setIndex().setUnique();
+				customerTable.addSchema("customer_password", varchar255);
 				customerTable.addSchema("customer_banlance", INT);
 				customerTable.addSchema("customer_ip", varchar255);
 				customerTable.addSchema("customer_type", INT);	//	@TODO wtf
@@ -141,6 +146,16 @@ public final class TableConfigurations {
 				Table table = new Table(i);
 				table.addSchema("machine_id", INT);
 				table.addSchema("service_name", varchar255);
+				tables.add(table);
+			}
+			else if ( i.equals("api_log")) {
+				Table table = new Table(i);
+				table.addSchema("sid",LONG).setAutoInc();
+				table.addSchema("date", "DATE");
+				table.addSchema("customer_name", varchar255);
+				table.addSchema("service_name", varchar255);
+				table.addSchema("input", varcharMAX);
+				table.addSchema("output", varchar255);
 				tables.add(table);
 			}
 		}

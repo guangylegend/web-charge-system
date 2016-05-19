@@ -39,19 +39,27 @@ public class SqlAble {
 					res += field.getName();
 					res += "=";
 					if ( field.get(this) instanceof String )
-						res += "'";
-					res += field.get(this);
-					if ( field.get(this) instanceof String )
-						res += "'";
-					res += ",";
+						res += "'" + field.get(this) + "'";
+					else if ( field.get(this) instanceof Date )
+						res += "'" 
+								+ ((Date)field.get(this)).getYear() + "-"
+								+ ((Date)field.get(this)).getMonth() + "-"
+								+ ((Date)field.get(this)).getDate() + " "
+								+ ((Date)field.get(this)).getHours() + ":"
+								+ ((Date)field.get(this)).getMinutes() + ":"
+								+ ((Date)field.get(this)).getSeconds()
+								+ "'";
+					else
+						res += field.get(this);
+					res += " and ";
 				}
 			} catch ( Exception e ) {
 				System.err.println("Impossible illegal access");
 				return null;
 			}
 		}
-		if ( res.endsWith(","))
-			res = res.substring(0, res.length()-1);
+		if ( res.endsWith(" and "))
+			res = res.substring(0, res.length()-5);
 		return "("+res+")";
 	}
 	/**
@@ -122,6 +130,8 @@ public class SqlAble {
 					field.set(this, res.getString(field.getName()));
 				else if ( field.getType().isAssignableFrom(Date.class) )
 					field.set(this, res.getDate(field.getName()));
+				else if ( field.getType().isAssignableFrom(Long.class))
+					field.set(this, res.getLong(field.getName()));
 				else
 					System.err.print("unhandled type of field!");
 				

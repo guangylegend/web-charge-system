@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Common.APILog;
 import Common.ServicePara;
 import Common.machineList;
 
@@ -39,6 +40,7 @@ public class Main {
 		System.out.println("Tests customer register....");
 		Common.CustomerInfo c = new Common.CustomerInfo();
 		c.customer_name = "new1";
+		c.customer_password = "123123";
 		c.customer_banlance = 100;
 		c.customer_contactName = "xiao ming";
 		c.customer_createdByUserId = con.getUserInfo("admin1").user_id;
@@ -88,6 +90,20 @@ public class Main {
 		ArrayList<Common.Service> servicelist = con.getAllServices();
 		for ( Common.Service s: servicelist) 
 			System.err.println(s);
+		
+		System.out.println("Tests api logging........");
+		Common.APILog log = new APILog();
+		log.customer_name = "xiaoming";
+		log.input = "input1";
+		log.output = "output1";
+		con.inputNewApiLog(log);
+		log.input = "input2";
+		log.output = "output2";
+		con.inputNewApiLog(log);
+		
+		ArrayList<Common.APILog> logList = new ArrayList<>();
+		logList = con.getApiLogByCustomerName("xiaoming");
+		System.err.println(logList);
 		
 		System.out.println("All testcases done!");
 	}

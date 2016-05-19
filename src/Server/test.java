@@ -39,15 +39,15 @@ public class test {
     }
 	
 	static public void main(String args[]) throws Exception {
-		FileInputStream file = new FileInputStream("D:\\git\\minivision-2015\\src\\Server\\input.txt");
+		FileInputStream file = new FileInputStream("E:\\workspace\\minivision-2015\\src\\Server\\input.txt");
 		Scanner in2 = new Scanner(file);
 		String str = "";
 		while (in2.hasNextLine()) {
 			str += in2.nextLine();
 		}
 		Request req = GsonUtils.getGson().fromJson(str, Request.class);
-		req.image_info.put("image1", GetImageStr("D:\\picture\\IMG_8630.jpg"));
-		req.image_info.put("image2", GetImageStr("D:\\picture\\IMG_8630.jpg"));
+		req.image_info.put("image1", GetImageStr("F:\\IMG_1715 1c.jpg"));
+		req.image_info.put("image2", GetImageStr("F:\\IMG_1715 1c.jpg"));
 		str = GsonUtils.getGson().toJson(req);
 		
 		final String strstr = str;

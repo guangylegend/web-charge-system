@@ -11,8 +11,10 @@ import java.util.Date;
 import javax.security.auth.login.Configuration;
 import javax.sql.CommonDataSource;
 
+import Common.APILog;
 import Common.CustomerInfo;
 import Common.Service;
+import Common.SqlAble;
 import Common.UserAccessOperation;
 import Common.UserInfo;
 import Common.loadbalance;
@@ -226,6 +228,13 @@ void createRelations() throws SQLException {
 		con.close();
 	}
 	
+	private int insertQuery(Connection con, String tableName, SqlAble item) throws SQLException {
+		Statement stmt = con.createStatement();
+		String s = "INSERT INTO " + tableName
+				+ item.getColumnNameStatement()
+				+ " VALUES " + item.getValueStatement();
+		return stmt.executeUpdate(s);
+	}
 	/**
 	 * Register a new costumer in database with 0.00 money.
 	 * @param customer Not all fields are needed. name, password must be included
@@ -235,31 +244,28 @@ void createRelations() throws SQLException {
 	public boolean inputNewCustomer(Common.CustomerInfo customer) throws SQLException {
 		Connection con = this.conectionToDB();
 
-		Statement stmt = con.createStatement();
-		
-		if ( customer.customer_name == null ) { // @TODO password checks
+		if ( customer.customer_name == null || customer.customer_password == null) {
+			con.close();
 			return false;
 		}
-		if ( customer.customer_id != null )
+		if ( customer.customer_id != null ) {	//	id should be null when insert
+			con.close();
 			return false;
-		if ( customer.customer_createdByUserId == null )
+		}
+		if ( customer.customer_createdByUserId == null ) {//	customer must be created by some user
 			return false;
+		}
+		
 		/**
 		 * Avoid SQL Injection Attack
 		 */
-		if ( securityCheck(customer.customer_name)/* && securityCheck(user.password)*/ ) {
-			String s = "INSERT INTO " + TableConfigurations.tableNames[1]
-					+ customer.getColumnNameStatement()
-					+ " VALUES " + customer.getValueStatement();
-			//System.out.println(s);
-			int res = stmt.executeUpdate(s);
-			con.close();
-			return res==1;
-		}
-		else {
+		if ( !securityCheck(customer.customer_name) || !securityCheck(customer.customer_password)) {
 			con.close();
 			return false;
 		}
+		int r = insertQuery(con, TableConfigurations.tableNames[1], customer);
+		con.close();
+		return r==1;
 	}
 	/**
 	 * @param user
@@ -269,21 +275,26 @@ void createRelations() throws SQLException {
 	public boolean inputNewUser(Common.UserInfo user) throws SQLException {
 		Connection con = this.conectionToDB();
 
-		Statement stmt = con.createStatement();
-		
-		if ( securityCheck(user.user_loginName) && securityCheck(user.user_password) ) {
-			String s = "INSERT INTO " + TableConfigurations.tableNames[0]
-					+ user.getColumnNameStatement()
-					+ " VALUES " + user.getValueStatement();
-			//System.out.println(s);
-			int res = stmt.executeUpdate(s);
-			con.close();
-			return res==1;
-		}
-		else {
+		if ( user.user_loginName == null || user.user_password == null) {
 			con.close();
 			return false;
 		}
+		if ( user.user_id != null ) {	//	id should be null when insert
+			con.close();
+			return false;
+		}
+		
+		/**
+		 * Avoid SQL Injection Attack
+		 */
+		if ( !securityCheck(user.user_loginName) || !securityCheck(user.user_password)) {
+			con.close();
+			return false;
+		}
+		
+		int r = insertQuery(con, TableConfigurations.tableNames[0], user);
+		con.close();
+		return r==1;
 	}
 	/**
 	 * Create a new service in db without parameter
@@ -329,13 +340,7 @@ void createRelations() throws SQLException {
 	public boolean inputNewParameterIntoService( Common.ServicePara para) throws SQLException {
 		Connection con = this.conectionToDB();
 		
-		Statement stmt = con.createStatement();
-		String s = "INSERT INTO " + TableConfigurations.tableNames[4]
-				+ para.getColumnNameStatement()
-				+ " VALUES " + para.getValueStatement();
-		
-		//	Insert a new record into service table
-		int res = stmt.executeUpdate(s);
+		int res = insertQuery(con, TableConfigurations.tableNames[4], para);
 		con.close();
 		return res==1;
 	}
@@ -350,13 +355,15 @@ void createRelations() throws SQLException {
 	public boolean inputNewMachine( Common.machineList machine ) throws SQLException {
 		Connection con = this.conectionToDB();
 		
-		Statement stmt = con.createStatement();
-		String s = "INSERT INTO " + TableConfigurations.tableNames[7]
-				+ machine.getColumnNameStatement()
-				+ " VALUES " + machine.getValueStatement();
+		int res = insertQuery(con, TableConfigurations.tableNames[7], machine);
+		con.close();
+		return res==1;
+	}
+	
+	public boolean inputNewApiLog( Common.APILog log ) throws SQLException {
+		Connection con = this.conectionToDB();
 		
-		//	Insert a new record into service table
-		int res = stmt.executeUpdate(s);
+		int res = insertQuery(con, TableConfigurations.tableNames[9], log);
 		con.close();
 		return res==1;
 	}
@@ -565,6 +572,22 @@ void createRelations() throws SQLException {
 			con.close();
 			throw ex;
 		}
+	}
+	
+	public ArrayList<Common.APILog> getApiLogByCustomerName(String name) throws SQLException {
+		ArrayList<Common.APILog> res = new ArrayList<>();
+		
+		Connection con = this.conectionToDB();
+		ResultSet r1 = con.createStatement().executeQuery("SELECT * FROM " 
+				+ TableConfigurations.tableNames[9]
+						+ " WHERE customer_name = " + "'" + name + "'");
+		while ( r1.next() ) {
+			Common.APILog log = new APILog();
+			log.fetchFromResultSet(r1);
+			res.add(log);
+		}
+		con.close();
+		return res;
 	}
 }
 
