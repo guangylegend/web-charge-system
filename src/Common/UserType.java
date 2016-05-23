@@ -6,12 +6,12 @@ package Common;
  * user_type = 4	<-------------->	‘ÀŒ¨»À‘±
  * @author chensqi 2016/5/18
  */
-public class UserTypeList extends SqlAble{
+public class UserType extends SqlAble{
 	public Integer user_type;
 	public String description;
-	public UserTypeList() {}
+	public UserType() {}
 	
-	public UserTypeList setDescription(String t) {
+	public UserType setDescription(String t) {
 		description = new String(t);
 		return this;
 	}

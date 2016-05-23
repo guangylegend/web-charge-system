@@ -8,10 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.security.auth.login.Configuration;
 import javax.sql.CommonDataSource;
 
+import com.mysql.jdbc.ReplicationConnection;
+import com.mysql.jdbc.ReplicationDriver;
 import com.sun.org.apache.bcel.internal.util.Class2HTML;
 
 import Common.APILog;
@@ -21,7 +24,7 @@ import Common.SqlAble;
 import Common.UserAccessOperation;
 import Common.UserInfo;
 import Common.loadbalance;
-import Common.machineList;
+import Common.machine;
 
 import java.sql.ResultSet;
 
@@ -51,45 +54,67 @@ public class DbConnector {
 				return false;
 		return true;
 	}
-	static Connection conectionToDB() throws SQLException {
-		
-		for ( int i = 0 ; i < ConnectingConfigurations.getHostSize() ; ++i ) {
-			
-			try {
-				return DriverManager.getConnection(
-					ConnectingConfigurations.getConnectingUrlWithDatabaseName(i),
-					ConnectingConfigurations.getConnectingUserName(),
-					ConnectingConfigurations.getConnectingPassword());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.err.println("IP:" + ConnectingConfigurations.getHostIp(i) + " failed!");
-				e.printStackTrace();
-				
-				if ( i == ConnectingConfigurations.getHostSize()-1 )
-					throw e;
-			}
-		}
-		return null;
+	public static String getDatabaseHost(int index) {
+		return ConnectingConfigurations.getHostIp(index);
 	}
-Connection conectionToMysql() throws SQLException {
+	/**
+	 * @return total number of database
+	 */
+	public static int getDatabaseNum() {
+		return ConnectingConfigurations.getHostSize();
+	}
+	/**
+	 * @param i check i-th database is working or not 
+	 * @return true if ok. false if crashed.
+	 */
+	public static boolean validCheck( int index ) {
 		
-		for ( int i = 0 ; i < ConnectingConfigurations.getHostSize() ; ++i ) {
-			
 			try {
-				return DriverManager.getConnection(
-					ConnectingConfigurations.getConnectingUrl(i),
+				DriverManager.getConnection(
+					ConnectingConfigurations.validCheckUrl(index),
 					ConnectingConfigurations.getConnectingUserName(),
 					ConnectingConfigurations.getConnectingPassword());
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.err.println("IP:" + ConnectingConfigurations.getHostIp(i) + " failed!");
-				e.printStackTrace();
-				
-				if ( i == ConnectingConfigurations.getHostSize()-1 )
-					throw e;
+				return false;
 			}
-		}
-		return null;
+			return true;
+	}
+	static Connection conectionToDB() throws SQLException {
+		/*
+		ReplicationDriver driver = new ReplicationDriver();
+	    Properties props = new Properties();
+	    props.put("autoReconnect", "true");
+	    props.put("failOverReadOnly", "false");
+	    props.put("roundRobinLoadBalance", "true");
+	    props.put("user", ConnectingConfigurations.getConnectingUserName());
+	    props.put("password", ConnectingConfigurations.getConnectingPassword());
+	    return driver.connect(ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
+	            props);
+		*/
+		
+		return DriverManager.getConnection(
+				ConnectingConfigurations.getConnectingUrlWithDatabaseName(),
+				ConnectingConfigurations.getConnectingUserName(),
+				ConnectingConfigurations.getConnectingPassword());
+	}
+	static Connection conectionToMysql() throws SQLException {
+		/*
+		ReplicationDriver driver = new ReplicationDriver();
+		
+	    Properties props = new Properties();
+	    props.put("autoReconnect", "true");
+	    props.put("failOverReadOnly", "false");
+	    props.put("roundRobinLoadBalance", "true");
+	    props.put("user", ConnectingConfigurations.getConnectingUserName());
+	    props.put("password", ConnectingConfigurations.getConnectingPassword());
+	    return driver.connect(ConnectingConfigurations.getConnectingUrl(),
+	            props);
+		*/
+		return DriverManager.getConnection(
+				ConnectingConfigurations.getConnectingUrl(),
+				ConnectingConfigurations.getConnectingUserName(),
+				ConnectingConfigurations.getConnectingPassword());
+		
 	}
 
 	
@@ -129,13 +154,14 @@ Connection conectionToMysql() throws SQLException {
 	void createTables() throws SQLException {
 		
 		Connection con = this.conectionToDB();
-
+		
 		Statement stmt = con.createStatement();
 		TableConfigurations.generateAllTables();
 		for ( int i = 0 ; i < TableConfigurations.tables.size() ; ++i ) {
 			Table t = TableConfigurations.tables.get(i);
-			//System.err.println(t.getCreatTableStatement());
+			System.err.println( t.getCreatTableStatement() );
 			stmt.execute(t.getCreatTableStatement());
+			
 		}
 		con.close();
 	}
@@ -247,7 +273,7 @@ void createRelations() throws SQLException {
 	public boolean inputNewCustomer(Common.CustomerInfo customer) throws SQLException {
 		Connection con = this.conectionToDB();
 
-		if ( customer.customer_name == null || customer.customer_password == null) {
+		if ( customer.customer_loginname == null || customer.customer_password == null) {
 			con.close();
 			return false;
 		}
@@ -262,7 +288,7 @@ void createRelations() throws SQLException {
 		/**
 		 * Avoid SQL Injection Attack
 		 */
-		if ( !securityCheck(customer.customer_name) || !securityCheck(customer.customer_password)) {
+		if ( !securityCheck(customer.customer_loginname) || !securityCheck(customer.customer_password)) {
 			con.close();
 			return false;
 		}
@@ -355,7 +381,7 @@ void createRelations() throws SQLException {
 	 * @return true if success
 	 * @throws SQLException
 	 */
-	public boolean inputNewMachine( Common.machineList machine ) throws SQLException {
+	public boolean inputNewMachine( Common.machine machine ) throws SQLException {
 		Connection con = this.conectionToDB();
 		
 		int res = insertQuery(con, TableConfigurations.tableNames[7], machine);
@@ -377,12 +403,12 @@ void createRelations() throws SQLException {
 	 * @return true if success
 	 * @throws SQLException
 	 */
-	public boolean setIncreaseUserMoney(String customerName, int money) throws SQLException {
+	public boolean setIncreaseUserMoney(String customer_loginname, int money) throws SQLException {
 		Connection con = this.conectionToDB();
 		Statement stmt = con.createStatement();
 		String s = " UPDATE " + TableConfigurations.tableNames[1]
-				+ " SET customer_banlance = customer_banlance + " + money
-				+ " WHERE customer_name = " + "'" + customerName + "'"; 
+				+ " SET customer_balance = customer_balance + " + money
+				+ " WHERE customer_loginname = " + "'" + customer_loginname + "'"; 
 		boolean res = stmt.execute(s);
 		con.close();
 		return res;
@@ -399,19 +425,19 @@ void createRelations() throws SQLException {
 	}
 	/**
 	 * 
-	 * @param userName 
+	 * @param loginName
 	 * @return information for this customer if existed. null if user not found 
 	 * @throws SQLException
 	 */
-	public CustomerInfo getCustomerInfo(String customerName) throws SQLException{
+	public CustomerInfo getCustomerInfo(String loginName) throws SQLException{
 		Connection con = this.conectionToDB();
 
 		Statement stmt = con.createStatement();
 		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
 								+ TableConfigurations.tableNames[1]
 								+ " WHERE "
-								+ " customer_name = " 
-								+ "'" + customerName + "'");
+								+ " customer_loginname = " 
+								+ "'" + loginName + "'");
 		
 		int cnt = 0 ;
 		CustomerInfo customer = new Common.CustomerInfo();
@@ -527,14 +553,14 @@ void createRelations() throws SQLException {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Common.machineList getNextFreeMachine(String serviceName) throws SQLException {
+	public Common.machine getNextFreeMachine(String serviceName) throws SQLException {
 		Connection con = this.conectionToDB();
 		
 		try {
 			con.setAutoCommit(false);
 			//	load current free machine
 			Common.loadbalance l = new loadbalance();
-			Common.machineList machine = new machineList();
+			Common.machine machine = new machine();
 			
 			ResultSet r1 = con.createStatement().executeQuery("SELECT * FROM " 
 					+ TableConfigurations.tableNames[8]
@@ -577,13 +603,13 @@ void createRelations() throws SQLException {
 		}
 	}
 	
-	public ArrayList<Common.APILog> getApiLogByCustomerName(String name) throws SQLException {
+	public ArrayList<Common.APILog> getApiLogByCustomerName(String customer_loginname) throws SQLException {
 		ArrayList<Common.APILog> res = new ArrayList<>();
 		
 		Connection con = this.conectionToDB();
 		ResultSet r1 = con.createStatement().executeQuery("SELECT * FROM " 
 				+ TableConfigurations.tableNames[9]
-						+ " WHERE customer_name = " + "'" + name + "'");
+						+ " WHERE customer_loginname = " + "'" + customer_loginname + "'");
 		while ( r1.next() ) {
 			Common.APILog log = new APILog();
 			log.fetchFromResultSet(r1);
@@ -592,7 +618,6 @@ void createRelations() throws SQLException {
 		con.close();
 		return res;
 	}
-	
 	
 }
 

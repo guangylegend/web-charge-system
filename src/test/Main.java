@@ -5,16 +5,44 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import Common.APILog;
+import Common.CustomerInfo;
 import Common.ServicePara;
 import Common.UserInfo;
-import Common.machineList;
+import Common.machine;
 import mysqlConnector.DbConnector;
 import mysqlConnector.generalDBAPI;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
-		Test();
+		//Test();
 		//test2();
+		syncWrite();
+		validCheck();
+	}
+	public static void validCheck() throws ClassNotFoundException, SQLException {
+		Common.CustomerInfo c = new Common.CustomerInfo();
+		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
+		
+		System.err.println("valid check begin!");
+		for ( int i = 0 ; i < con.getDatabaseNum() ; ++i ) {
+			if ( con.validCheck(i) ==false) {
+				System.err.println("Database:" + con.getDatabaseHost(i) + " error!");
+				return;
+			}
+		}
+		System.err.println("valid check passed!");
+	}
+	public static void syncWrite() throws ClassNotFoundException, SQLException {
+		Common.CustomerInfo c = new Common.CustomerInfo();
+		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
+		
+		c.customer_loginname="admin2";
+		c.customer_password="123123";
+		c.customer_createdByUserId=1;
+		//con.inputNewCustomer(c);
+		
+		c = con.getCustomerInfo("admin2");
+		System.err.println(c);
 	}
 	public static void test2() throws ClassNotFoundException, SQLException {
 		
@@ -55,7 +83,7 @@ public class Main {
 		Common.CustomerInfo c = new Common.CustomerInfo();
 		c.customer_name = "new1";
 		c.customer_password = "123123";
-		c.customer_banlance = 100;
+		c.customer_balance = 100;
 		c.customer_contactName = "xiao ming";
 		c.customer_createdByUserId = con.getUserInfo("admin1").user_id;
 		con.inputNewCustomer(c);
@@ -70,7 +98,7 @@ public class Main {
 		System.err.println(c);
 		
 		System.out.println("Tests input 2 machines......");
-		Common.machineList machine = new machineList();
+		Common.machine machine = new machine();
 		machine.ip = "192.168.0.1";
 		con.inputNewMachine(machine);
 		machine.ip = "192.168.0.2";
@@ -84,7 +112,7 @@ public class Main {
 		System.err.println(service);
 		
 		System.out.println("Tests loadbalance......");
-		Common.machineList l = con.getNextFreeMachine("service0");
+		Common.machine l = con.getNextFreeMachine("service0");
 		System.err.println(l);
 		l = con.getNextFreeMachine("service0");
 		System.err.println(l);
@@ -126,23 +154,35 @@ public class Main {
 		c = new Common.CustomerInfo();
 		c.customer_name = "new2";
 		c.customer_password = "123123";
-		c.customer_banlance = 100;
+		c.customer_balance = 100;
 		c.customer_contactName = "xiao ming";
 		c.customer_createdByUserId = con.getUserInfo("admin1").user_id;
 		api.executeInsert(c);
 		
 		ArrayList<Common.CustomerInfo> list = new ArrayList<Common.CustomerInfo>();
-		list = api.setOrderBy("customer_banlance")
+		list = api.setOrderBy("customer_balance")
 					.setTop(1).executeSelect();
 		
 		System.err.println(list);
 		
 		c = new Common.CustomerInfo();
-		c.customer_banlance = 1200;
+		c.customer_balance = 1200;
 		api.clear().setWhere("customer_name=\'new2\'").executeUpdate(c);
-		list = api.clear().setOrderBy("customer_banlance")
+		list = api.clear().setOrderBy("customer_balance")
 				.setTop(1).executeSelect();
 		System.err.println(list);
+		
+		System.out.println("Tests sync....");
+		for ( Integer i = new Integer(0); i < 100000 ; ++i ) {
+			if ( i % 1000 == 0 )
+				System.out.println(i);
+			c = new CustomerInfo();
+			c.customer_loginname = i.toString();
+			c.customer_password = "123123";
+			c.customer_createdByUserId = 1;
+			if ( con.inputNewCustomer(c) == false )
+				System.err.println("register customer fail!");;
+		}
 		
 		System.out.println("All testcases done!");
 	}

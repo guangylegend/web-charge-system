@@ -3,7 +3,7 @@ package test;
 import java.sql.SQLException;
 
 import Common.CustomerInfo;
-import Common.machineList;
+import Common.machine;
 import mysqlConnector.DbConnector;
 import Common.Service;
 
@@ -33,7 +33,7 @@ public class InitDb {
 				"http://10.46.19.1:8080",
 				"http://10.46.19.6:8080"};
 		for (int i = 0; i < machines.length; ++i) {
-			machineList machine = new machineList();
+			machine machine = new machine();
 			machine.ip = machines[i];
 			db.inputNewMachine(machine);
 		}
@@ -49,7 +49,7 @@ public class InitDb {
 		
 		CustomerInfo customer = new CustomerInfo();
 		customer.customer_name = "test";
-		customer.customer_banlance = 1000000000;
+		customer.customer_balance = 1000000000;
 		customer.customer_ip = "59.78.57.213";
 		customer.customer_type = 1;
 		customer.customer_servicekey = "123456";

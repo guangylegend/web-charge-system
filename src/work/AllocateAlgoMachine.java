@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import mysqlConnector.DbConnector;
 import Common.Service;
-import Common.machineList;
+import Common.machine;
 import Server.Request;
 import Server.RequestInfo;
 import Server.Response;
@@ -31,7 +31,7 @@ public class AllocateAlgoMachine implements Callable<Response> {
 	
 	public Response call() throws Exception {
 		try {
-			machineList machine = new DbConnector().getNextFreeMachine(service.service_name);
+			machine machine = new DbConnector().getNextFreeMachine(service.service_name);
 			if (machine == null) {
 				System.out.println("fuck");
 			}
