@@ -14,10 +14,10 @@ import mysqlConnector.generalDBAPI;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
-		//Test();
+		Test();
 		//test2();
-		syncWrite();
-		validCheck();
+		//yncWrite();
+		//validCheck();
 	}
 	public static void validCheck() throws ClassNotFoundException, SQLException {
 		Common.CustomerInfo c = new Common.CustomerInfo();
@@ -119,14 +119,7 @@ public class Main {
 		l = con.getNextFreeMachine("service0");
 		System.err.println(l);
 		
-		System.out.println("Tests insert and read para");
-		Common.ServicePara para = new Common.ServicePara();
-		para.setServiceName("service0").setParaName("para0").setParaType("string");
-		con.inputNewParameterIntoService(para);
-		para.setServiceName("service0").setParaName("para1").setParaType("int");
-		con.inputNewParameterIntoService(para);
-		ArrayList<ServicePara> paras = con.getParaByServiceName("service0");
-		System.err.println(paras);
+		
 		
 		System.out.println("Tests insert and read all services");
 		ArrayList<Common.Service> servicelist = con.getAllServices();
@@ -135,7 +128,7 @@ public class Main {
 		
 		System.out.println("Tests api logging........");
 		Common.APILog log = new APILog();
-		log.customer_name = "xiaoming";
+		log.customer_id = 1;
 		log.input = "input1";
 		log.output = "output1";
 		con.inputNewApiLog(log);
@@ -144,9 +137,11 @@ public class Main {
 		con.inputNewApiLog(log);
 		
 		ArrayList<Common.APILog> logList = new ArrayList<>();
+		/*
 		logList = con.getApiLogByCustomerName("xiaoming");
+		 
 		System.err.println(logList);
-		
+		*/
 		
 		System.out.println("Tests generalAPI ....");
 		generalDBAPI<Common.CustomerInfo> api = new generalDBAPI<Common.CustomerInfo>( Common.CustomerInfo.class );

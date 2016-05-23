@@ -4,11 +4,11 @@ import java.util.Date;
 
 public class PriceLog extends SqlAble{
 	public Long sid;
-	public String service_name;
-	public String cutsomer_name;
+	public Integer service_id;
+	public Integer cutsomer_id;
 	public Integer old_price;
 	public Integer new_price;
-	public String user_name;	//	price is changed by thi user
+	public Integer user_id;	//	price is changed by thi user
 	public Date date;
 	@Override
 	public String getTableName() {

@@ -344,7 +344,7 @@ void createRelations() throws SQLException {
 		
 		Common.loadbalance b = new loadbalance();
 		b.machine_id = 1 ;
-		b.service_name = new String(service.service_name);
+		b.service_id = getServiceByName(service.service_name).service_id;
 		String s2 = "INSERT INTO " + TableConfigurations.tableNames[8]	//	service table
 				+ b.getColumnNameStatement()
 				+ " VALUES " + b.getValueStatement();
@@ -562,9 +562,11 @@ void createRelations() throws SQLException {
 			Common.loadbalance l = new loadbalance();
 			Common.machine machine = new machine();
 			
+			Common.Service service = getServiceByName(serviceName);
+			
 			ResultSet r1 = con.createStatement().executeQuery("SELECT * FROM " 
 					+ TableConfigurations.tableNames[8]
-							+ " WHERE service_name = " + "'" + serviceName + "'");
+							+ " WHERE service_id = " + service.service_id);
 			if ( r1.next() ) {
 				l.fetchFromResultSet( r1 );
 				
@@ -590,7 +592,7 @@ void createRelations() throws SQLException {
 			//	update free machine
 			String s = " UPDATE " + TableConfigurations.tableNames[8]
 					+ " SET machine_id = " + ((l.machine_id)%cnt+1)
-					+ " WHERE service_name = " + "'" + serviceName + "'"; 
+					+ " WHERE service_id = " + service.service_id; 
 			con.createStatement().executeUpdate( s );
 			con.commit();
 			con.close();
@@ -602,7 +604,7 @@ void createRelations() throws SQLException {
 			throw ex;
 		}
 	}
-	
+	/*
 	public ArrayList<Common.APILog> getApiLogByCustomerName(String customer_loginname) throws SQLException {
 		ArrayList<Common.APILog> res = new ArrayList<>();
 		
@@ -618,6 +620,6 @@ void createRelations() throws SQLException {
 		con.close();
 		return res;
 	}
-	
+	*/
 }
 
