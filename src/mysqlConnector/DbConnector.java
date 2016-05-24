@@ -388,7 +388,12 @@ void createRelations() throws SQLException {
 		con.close();
 		return res==1;
 	}
-	
+	/**
+	 * Input a new log and return it's id 
+	 * @param log
+	 * @return
+	 * @throws SQLException
+	 */
 	public Long inputNewApiLog( Common.APILog log ) throws SQLException {
 		Connection con = this.conectionToDB();
 		con.setAutoCommit(false);
@@ -616,6 +621,25 @@ void createRelations() throws SQLException {
 			con.close();
 			throw ex;
 		}
+	}
+	/**
+	 * 
+	 * @param whereCondition could be null, or "status = \'xxx\'"
+	 * @return result
+	 * @throws SQLException
+	 */
+	public int getCountAPILog(String whereCondition) throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "SELECT count(*) FROM " 
+				+ TableConfigurations.tableNames[9];
+		if ( whereCondition != null )
+			s += "WHERE " + whereCondition; 
+		ResultSet res =  stmt.executeQuery(s);
+		res.next();
+		int r = res.getInt(1);
+		con.close();
+		return r;
 	}
 	/*
 	public ArrayList<Common.APILog> getApiLogByCustomerName(String customer_loginname) throws SQLException {

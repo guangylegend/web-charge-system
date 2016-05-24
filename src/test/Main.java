@@ -48,10 +48,12 @@ public class Main {
 	public static void test3() throws SQLException, ClassNotFoundException {
 		DbConnector con = new DbConnector();
 		APILog log = new APILog();
-		log.customer_id = 22;
+		log.customer_id = 33;
 		log.input = "xx";
-		Long x = con.inputNewApiLog(log);
-		System.err.println(x);
+		//Long x = con.inputNewApiLog(log);
+		//System.err.println(x);
+		
+		System.err.println(con.getCountAPILog(null));
 	}
 	public static void test2() throws ClassNotFoundException, SQLException {
 		
