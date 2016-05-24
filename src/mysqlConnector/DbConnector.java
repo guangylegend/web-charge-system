@@ -389,12 +389,24 @@ void createRelations() throws SQLException {
 		return res==1;
 	}
 	
-	public boolean inputNewApiLog( Common.APILog log ) throws SQLException {
+	public Long inputNewApiLog( Common.APILog log ) throws SQLException {
 		Connection con = this.conectionToDB();
+		con.setAutoCommit(false);
+		Statement stmt = con.createStatement();
+		Long res ;
 		
-		int res = insertQuery(con, TableConfigurations.tableNames[9], log);
+		String s = "INSERT INTO " + TableConfigurations.tableNames[9]
+				+ log.getColumnNameStatement()
+				+ " VALUES " + log.getValueStatement();
+		stmt.executeUpdate(s);
+		//int res = insertQuery(con, TableConfigurations.tableNames[9], log);
+		
+		ResultSet r = stmt.executeQuery("SELECT LAST_INSERT_ID()");
+		r.next();
+		res = r.getLong("LAST_INSERT_ID()");
+		con.commit();
 		con.close();
-		return res==1;
+		return res;
 	}
 	/**
 	 * Set a customer's money into @money

@@ -15,7 +15,8 @@ import mysqlConnector.generalDBAPI;
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
 		//Test();
-		test2();
+		//test2();
+		test3();
 		//yncWrite();
 		//validCheck();
 	}
@@ -43,6 +44,14 @@ public class Main {
 		
 		c = con.getCustomerInfo("admin2");
 		System.err.println(c);
+	}
+	public static void test3() throws SQLException, ClassNotFoundException {
+		DbConnector con = new DbConnector();
+		APILog log = new APILog();
+		log.customer_id = 22;
+		log.input = "xx";
+		Long x = con.inputNewApiLog(log);
+		System.err.println(x);
 	}
 	public static void test2() throws ClassNotFoundException, SQLException {
 		

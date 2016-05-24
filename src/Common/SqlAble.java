@@ -43,7 +43,7 @@ public abstract class SqlAble implements Cloneable{
 	}
 	/**
 	 * (col1=value1,col2=value2,...£©
-	 * @return WHERE statement for sql 
+	 * @return set statement for sql 
 	 */
 	public String getSetStatement() {
 		String res = "";
@@ -70,15 +70,15 @@ public abstract class SqlAble implements Cloneable{
 								+ "'";*/
 					else
 						res += field.get(this);
-					res += " and ";
+					res += ",";
 				}
 			} catch ( Exception e ) {
 				System.err.println("Impossible illegal access");
 				return null;
 			}
 		}
-		if ( res.endsWith(" and "))
-			res = res.substring(0, res.length()-5);
+		if ( res.endsWith(","))
+			res = res.substring(0, res.length()-1);
 		return res;
 	}
 	/**
