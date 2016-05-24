@@ -46,6 +46,7 @@ public final class TableConfigurations {
 		String varcharMAX = "VARCHAR(3000)";
 		String INT = "INT";
 		String LONG = "BIGINT";
+		String DATE = "TIME";
 		
 		for ( String i : tableNames ) {
 			/*
@@ -67,7 +68,7 @@ public final class TableConfigurations {
 				userTable.addSchema("email",varchar255);
 				userTable.addSchema("phone",varchar255);
 				userTable.addSchema("login_ip",varchar255);
-				userTable.addSchema("login_date","DATE");
+				userTable.addSchema("login_date",DATE);
 				userTable.addSchema("login_flag",varchar255);
 				userTable.addSchema("remarks",varchar255);
 				
@@ -98,7 +99,7 @@ public final class TableConfigurations {
 				Table services = new Table(i);
 				services.addSchema("service_id", INT).setAutoInc();
 				services.addSchema("service_name", varchar255).setIndex();
-				services.addSchema("service_createTime", "DATE");
+				services.addSchema("service_createTime", DATE);
 				services.addSchema("service_desc", varchar255);				
 				services.addSchema("service_guidePrice", INT);
 				services.addSchema("service_speCharging", varcharMAX);
@@ -154,20 +155,21 @@ public final class TableConfigurations {
 			else if ( i.equals("api_log")) {
 				Table table = new Table(i);
 				table.addSchema("sid",LONG).setAutoInc();
-				table.addSchema("date", "DATE");
+				table.addSchema("date", DATE);
 				table.addSchema("customer_id", INT);
 				table.addSchema("service_id", INT);
 				table.addSchema("input", varcharMAX);
-				table.addSchema("output", varchar255);
+				table.addSchema("output", varcharMAX);
 				table.addSchema("cost", INT);
 				table.addSchema("host", varchar255);
 				table.addSchema("exception", varcharMAX);
+				table.addSchema("status", varchar255);
 				tables.add(table);
 			}
 			else if ( i.equals("price_log")) {
 				Table table = new Table(i);
 				table.addSchema("sid",LONG).setAutoInc();
-				table.addSchema("date", "DATE");
+				table.addSchema("date", DATE);
 				table.addSchema("service_id", INT);
 				table.addSchema("cutsomer_id", INT);
 				table.addSchema("user_id", INT);
@@ -178,7 +180,7 @@ public final class TableConfigurations {
 			else if ( i.equals("charge_log")) {
 				Table table = new Table(i);
 				table.addSchema("sid",LONG).setAutoInc();
-				table.addSchema("date", "DATE");
+				table.addSchema("date", DATE);
 				table.addSchema("user_id", INT);
 				table.addSchema("customer_id", INT);
 				table.addSchema("description", varchar255);

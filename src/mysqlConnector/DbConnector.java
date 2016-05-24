@@ -537,6 +537,7 @@ void createRelations() throws SQLException {
 		// Fetch serviceIds
 		ResultSet res =  stmt.executeQuery("SELECT * FROM " 
 								+ TableConfigurations.tableNames[2] );	
+		
 		ArrayList<Common.Service> serviceList = new ArrayList<Service>();
 		while ( res.next() ) {
 			Common.Service service = new Common.Service();

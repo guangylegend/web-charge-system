@@ -14,8 +14,8 @@ import mysqlConnector.generalDBAPI;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
-		Test();
-		//test2();
+		//Test();
+		test2();
 		//yncWrite();
 		//validCheck();
 	}
@@ -46,13 +46,20 @@ public class Main {
 	}
 	public static void test2() throws ClassNotFoundException, SQLException {
 		
-		Common.UserInfo u1 = new UserInfo();
+		Common.APILog u1 = new APILog();
+		generalDBAPI<APILog> x = new generalDBAPI<APILog>(APILog.class);
 		
-		u1.user_loginName = "xiaoming";
+		u1.date = new Date();
+		u1.customer_id = 22 ;
+		System.err.println(u1);
+		//System.err.println( new java.sql.Date(u1.date.getTime()));
+		System.err.println(u1.getSetStatement());
+		//x.executeInsert(u1);
 		
-		Common.UserInfo u2 = (UserInfo) u1.Clone();
-		u1.user_loginName = "xiaoa";
-		System.out.println(u2);
+		x.clear();
+		x.setWhere("customer_id = 22");
+		u1 = x.executeSelect().get(0);
+		System.err.println(u1);
 	}
 	public static void Test() throws SQLException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException {
 			
@@ -168,9 +175,7 @@ public class Main {
 		System.err.println(list);
 		
 		System.out.println("Tests sync....");
-		for ( Integer i = new Integer(0); i < 100000 ; ++i ) {
-			if ( i % 1000 == 0 )
-				System.out.println(i);
+		for ( Integer i = new Integer(0); i < 10 ; ++i ) {
 			c = new CustomerInfo();
 			c.customer_loginname = i.toString();
 			c.customer_password = "123123";
