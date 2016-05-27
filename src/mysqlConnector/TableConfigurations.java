@@ -17,6 +17,8 @@ public final class TableConfigurations {
 	 * 7. machine_list - (ip,machine_id)
 	 * 8. load_balance - (service_name,machine_id)
 	 * 9. api_log - ();
+	 * 10. price_log - ()
+	 * 11. charge_log - ()
 	 */
 	static public String[] tableNames = new String[]{"credit_user"
 									,"credit_customer"
@@ -28,6 +30,8 @@ public final class TableConfigurations {
 									,"machine_list"
 									,"load_balance"
 									,"api_log"
+									,"price_log"
+									,"charge_log"
 									};
 	static boolean first = true ;
 	
@@ -42,6 +46,7 @@ public final class TableConfigurations {
 		String varcharMAX = "VARCHAR(3000)";
 		String INT = "INT";
 		String LONG = "BIGINT";
+		String DATE = "TIME";
 		
 		for ( String i : tableNames ) {
 			/*
@@ -58,6 +63,14 @@ public final class TableConfigurations {
 				userTable.addSchema("user_phoneNum",varchar255);
 				userTable.addSchema("user_type",INT);	//	see role table for details 
 				userTable.addSchema("user_desc",varchar255);	//	description
+				userTable.addSchema("company_id",varchar255);
+				userTable.addSchema("office_id",varchar255);
+				userTable.addSchema("email",varchar255);
+				userTable.addSchema("phone",varchar255);
+				userTable.addSchema("login_ip",varchar255);
+				userTable.addSchema("login_date",DATE);
+				userTable.addSchema("login_flag",varchar255);
+				userTable.addSchema("remarks",varchar255);
 				
 				tables.add(userTable);
 			}
@@ -67,9 +80,10 @@ public final class TableConfigurations {
 			else if ( i.equals("credit_customer")) {
 				Table customerTable = new Table(i);
 				customerTable.addSchema("customer_id", INT).setAutoInc();
-				customerTable.addSchema("customer_name", varchar255).setIndex().setUnique();
+				customerTable.addSchema("customer_name", varchar255);
+				customerTable.addSchema("customer_loginname", varchar255).setIndex().setUnique();
 				customerTable.addSchema("customer_password", varchar255);
-				customerTable.addSchema("customer_banlance", INT);
+				customerTable.addSchema("customer_balance", INT);
 				customerTable.addSchema("customer_ip", varchar255);
 				customerTable.addSchema("customer_type", INT);	//	@TODO wtf
 				customerTable.addSchema("customer_servicekey", varchar255);
@@ -84,8 +98,8 @@ public final class TableConfigurations {
 			else if ( i.equals("credit_service")) {
 				Table services = new Table(i);
 				services.addSchema("service_id", INT).setAutoInc();
-				services.addSchema("service_name", varchar255).setIndex().setUnique();
-				services.addSchema("service_createTime", "DATE");
+				services.addSchema("service_name", varchar255).setIndex();
+				services.addSchema("service_createTime", DATE);
 				services.addSchema("service_desc", varchar255);				
 				services.addSchema("service_guidePrice", INT);
 				services.addSchema("service_speCharging", varcharMAX);
@@ -102,22 +116,12 @@ public final class TableConfigurations {
 			 */
 			else if ( i.equals("customer_service")) {
 				Table userToServices = new Table(i);
-				userToServices.addSchema("customer_name", varchar255).setIndex();
-				userToServices.addSchema("service_name", varchar255).setIndex();
+				userToServices.addSchema("customer_id", INT);
+				userToServices.addSchema("service_id", INT);
 				userToServices.addSchema("fee", INT);
 				tables.add(userToServices);
 			}
 			
-			/*
-			 * service-parameters table
-			 */
-			else if ( i.equals("service_para")) {
-				Table servicePara = new Table(i);
-				servicePara.addSchema("service_name", varchar255);
-				servicePara.addSchema("para_name", varchar255);
-				servicePara.addSchema("para_type", varchar255);
-				tables.add(servicePara);
-			}
 			else if ( i.equals("user_access")) {
 				Table userAccess = new Table(i);
 				userAccess.addSchema("user_type",INT);
@@ -145,17 +149,46 @@ public final class TableConfigurations {
 			else if ( i.equals("load_balance")) {
 				Table table = new Table(i);
 				table.addSchema("machine_id", INT);
-				table.addSchema("service_name", varchar255);
+				table.addSchema("service_id", INT);
 				tables.add(table);
 			}
 			else if ( i.equals("api_log")) {
 				Table table = new Table(i);
 				table.addSchema("sid",LONG).setAutoInc();
-				table.addSchema("date", "DATE");
-				table.addSchema("customer_name", varchar255);
-				table.addSchema("service_name", varchar255);
+				table.addSchema("date", DATE);
+				table.addSchema("customer_id", INT);
+				table.addSchema("service_id", INT);
 				table.addSchema("input", varcharMAX);
-				table.addSchema("output", varchar255);
+				table.addSchema("output", varcharMAX);
+				table.addSchema("cost", INT);
+				table.addSchema("host", varchar255);
+				table.addSchema("exception", varcharMAX);
+				table.addSchema("status", varchar255);
+				tables.add(table);
+			}
+			else if ( i.equals("price_log")) {
+				Table table = new Table(i);
+				table.addSchema("sid",LONG).setAutoInc();
+				table.addSchema("date", DATE);
+				table.addSchema("service_id", INT);
+				table.addSchema("cutsomer_id", INT);
+				table.addSchema("user_id", INT);
+				table.addSchema("new_price", INT);
+				table.addSchema("old_price", INT);
+				tables.add(table);
+			}
+			else if ( i.equals("charge_log")) {
+				Table table = new Table(i);
+				table.addSchema("sid",LONG).setAutoInc();
+				table.addSchema("date", DATE);
+				table.addSchema("user_id", INT);
+				table.addSchema("customer_id", INT);
+				table.addSchema("description", varchar255);
+				table.addSchema("new_balance", INT);
+				table.addSchema("old_balance", INT);
+				table.addSchema("charge_value", INT);
+				table.addSchema("additional_chargevalue", INT);
+				
 				tables.add(table);
 			}
 		}

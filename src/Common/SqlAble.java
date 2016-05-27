@@ -3,6 +3,8 @@ package Common;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class SqlAble implements Cloneable{
@@ -41,7 +43,7 @@ public abstract class SqlAble implements Cloneable{
 	}
 	/**
 	 * (col1=value1,col2=value2,...£©
-	 * @return WHERE statement for sql 
+	 * @return set statement for sql 
 	 */
 	public String getSetStatement() {
 		String res = "";
@@ -54,26 +56,29 @@ public abstract class SqlAble implements Cloneable{
 					res += "=";
 					if ( field.get(this) instanceof String )
 						res += "'" + field.get(this) + "'";
-					else if ( field.get(this) instanceof Date )
-						res += "'" 
-								+ ((Date)field.get(this)).getYear() + "-"
-								+ ((Date)field.get(this)).getMonth() + "-"
+					else if ( field.get(this) instanceof Date ) {
+						SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						res += "'" + timeFormat.format((Date)field.get(this)) + "'";
+					}
+						/*res += "'" 
+								+ (((Date)field.get(this)).getYear()+1900) + "-"
+								+ (((Date)field.get(this)).getMonth()+1) + "-"
 								+ ((Date)field.get(this)).getDate() + " "
 								+ ((Date)field.get(this)).getHours() + ":"
 								+ ((Date)field.get(this)).getMinutes() + ":"
 								+ ((Date)field.get(this)).getSeconds()
-								+ "'";
+								+ "'";*/
 					else
 						res += field.get(this);
-					res += " and ";
+					res += ",";
 				}
 			} catch ( Exception e ) {
 				System.err.println("Impossible illegal access");
 				return null;
 			}
 		}
-		if ( res.endsWith(" and "))
-			res = res.substring(0, res.length()-5);
+		if ( res.endsWith(","))
+			res = res.substring(0, res.length()-1);
 		return res;
 	}
 	/**
@@ -111,15 +116,10 @@ public abstract class SqlAble implements Cloneable{
 				if ( field.get( this ) != null  ) {
 					if ( field.get(this) instanceof String )
 						res += "'" + field.get(this) + "'";
-					else if ( field.get(this) instanceof Date )
-						res += "'" 
-								+ ((Date)field.get(this)).getYear() + "-"
-								+ ((Date)field.get(this)).getMonth() + "-"
-								+ ((Date)field.get(this)).getDate() + " "
-								+ ((Date)field.get(this)).getHours() + ":"
-								+ ((Date)field.get(this)).getMinutes() + ":"
-								+ ((Date)field.get(this)).getSeconds()
-								+ "'";
+					else if ( field.get(this) instanceof Date ) {
+						SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						res += "'" + timeFormat.format((Date)field.get(this)) + "'";
+					}
 					else
 						res += field.get(this);
 					res += ",";
@@ -142,21 +142,24 @@ public abstract class SqlAble implements Cloneable{
 					field.set(this, res.getInt(field.getName()));
 				else if ( field.getType().isAssignableFrom(String.class) )
 					field.set(this, res.getString(field.getName()));
-				else if ( field.getType().isAssignableFrom(Date.class) )
-					field.set(this, res.getDate(field.getName()));
+				else if ( field.getType().isAssignableFrom(Date.class) ) {
+					SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+					field.set(this, timeFormat.parse( res.getTimestamp(field.getName()).toString() ));
+				}
 				else if ( field.getType().isAssignableFrom(Long.class))
 					field.set(this, res.getLong(field.getName()));
 				else
 					System.err.print("unhandled type of field!");
 				
 			} catch ( SQLException e ) {
-				e.printStackTrace();
-				return false;
+				e.printStackTrace();	//	ignore
+				//return false;
 			}catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.err.println("Impossible illegal access");
-				return false;
+				e.printStackTrace();	//	ignore
+				//System.err.println("Impossible illegal access");
+				//return false;
+			} catch (ParseException e) {
+				e.printStackTrace();	//	ignore
 			}
 		}
 		return true;

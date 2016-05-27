@@ -1,9 +1,9 @@
 package Common;
 
-public class machineList extends SqlAble {
+public class machine extends SqlAble {
 	public String ip;
 	public Integer machine_id;	//	set null when doing insert
-	public machineList() {}
+	public machine() {}
 	@Override
 	public String getTableName() {
 		return mysqlConnector.TableConfigurations.tableNames[7];

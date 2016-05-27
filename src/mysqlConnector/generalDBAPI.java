@@ -36,7 +36,7 @@ public class generalDBAPI<T extends Common.SqlAble> {
 				+ item.getSetStatement();
 		if ( whereClause != null )
 			s += " WHERE " + whereClause;
-		System.err.println(s);
+		
 		r = stmt.executeUpdate(s);
 		con.close();
 		return r;
