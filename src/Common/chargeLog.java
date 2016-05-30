@@ -1,6 +1,6 @@
 package Common;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class chargeLog extends SqlAble{
 	public Long sid;

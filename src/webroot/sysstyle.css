@@ -18,20 +18,29 @@ body{
     font-family: "lucida Grande",Tahoma,Arial;  
     font-size: 12px;  
     overflow: hidden;
-    background-image: -moz-linear-gradient(top,#77D1F6, #2F368F);    
-    background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0, #77D1F6),color-stop(1, #2F368F));     
     margin:0px;  
     padding:0px;
     width:100%;  
     height:100%;
 }  
+a:link,a:visited{
+    text-decoration:none;
+    text-align:center; 
+    color:black; 
+    font-size:14px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+}
 #header {  
     float: left;  
-    height: 62px;  
+    height: 80px;  
     position: relative;  
     width: 100%;  
     z-index: 10;  
-    text-align:center;  
+    text-align:center; 
+    background-color:#1C75BC;  
+    opacity:0.8; 
+    margin-top:-8px; 
+    border-radius: 8px;
 }  
 #logo {  
     float: left;  
@@ -46,8 +55,9 @@ body{
     height: 38px;  
     line-height:38px;  
     vertical-align:middle;  
-    margin: 15px 0 0 1%;  
-    width: 200px;  
+    margin-left:15px; 
+    margin-top:23px; 
+    width: 120px;  
     font-family:Î¢ÈíÑÅºÚ;  
     font-size:18px;  
     font-weight:bold;  
@@ -56,11 +66,11 @@ body{
 #menu{  
     position:absolute;  
     left:45%;  
-    margin-top:15px;  
+    margin-top:23px;  
     margin-left:-300px;  
     float: float;  
     height: 38px;  
-    width:515px;  
+    width:410px;  
     line-height:38px;  
     vertical-align:middle;  
     text-align:center;  
@@ -80,15 +90,19 @@ body{
     font-weight:bold;  
     font-size:14px;  
 }  
-#welcome{  
+#welcome{ 
+    margin-top:8px; 
     position: relative;  
-    float:left;  
+    float:left; 
 }  
+
 #logout{  
+    margin-top:8px;
     position: relative;  
-    float:right;  
+    float:right;    
 }  
-#menu_container{  
+
+#menu_container{ 
     position:relative;  
     margin:2px;  
     height: 34px;  
@@ -170,6 +184,19 @@ iframe{
 #footer #text{  
     text-align:center;  
     font-size:14px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+    font-weight:bold;  
+}  
+t-weight:bold;  
+}  
+ 
+   font-size:14px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+    font-weight:bold;  
+}  
+nt-weight:bold;  
+}  
+x;  
     font-family:Î¢ÈíÑÅºÚ;  
     font-weight:bold;  
 }   

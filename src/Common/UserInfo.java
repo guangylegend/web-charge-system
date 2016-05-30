@@ -16,14 +16,14 @@ public class UserInfo extends SqlAble{
 	public Integer user_type;
 	public String user_desc;	//	description
 	
-	public String company_id;	//	¹éÊô¹«Ë¾(1:±íÊ¾¹«Ë¾ÄÚ²¿ÈËÔ± null±íÊ¾ÆäËü)
-	public String office_id;	//	¹éÊô²¿ÃÅ
+	public String company_id;	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¾(1:ï¿½ï¿½Ê¾ï¿½ï¿½Ë¾ï¿½Ú²ï¿½ï¿½ï¿½Ô± nullï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½)
+	public String office_id;	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public String email;
 	public String phone;
 	public String login_ip;
 	public Date login_date;
-	public Integer login_flag;	//	ÊÇ·ñ¿ÉµÇÂ¼(1±íÊ¾¿ÉµÇÂ¼)
-	public String remarks;		//	±¸×¢
+	public String login_flag;	//	ï¿½Ç·ï¿½Éµï¿½Â¼(1ï¿½ï¿½Ê¾ï¿½Éµï¿½Â¼)
+	public String remarks;		//	ï¿½ï¿½×¢
 	
 	
 	

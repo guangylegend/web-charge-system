@@ -1,39 +1,72 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.io.*,java.util.*,java.sql.*" %>
+<%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+<%@ page import="mysqlConnector.DbConnector,mysqlConnector.generalDBAPI" %>
 <!DOCTYPE html>  
 <html>  
+<script>
+function set_action()
+{
+	document.getElementById("mainframe").src="main.jsp?action_type=1";  
+}
+</script>
+<%	
+	session.setAttribute("name","admin");
+	session.setAttribute("rank","3");
+	session.setAttribute("id","1");	
+  if(session.getAttribute("name")==null)
+	  response.sendRedirect("wrong.jsp");
+%>
+
+
+
 
 <head>  
-    <title>Home Page</title>  
+    <title>小视管理平台</title>  
     <link rel="stylesheet" type="text/css" href="sysstyle.css" />  
+	<meta charset="UTF-8" />
 </head>  
 <body>  
 <div id="wrapper">  
     <div id="header">  
-        <div id="title">后台管理系统</div>  
+        <div id="title">小视管理平台</div>		
         <div id="menu">  
 			<div id="menu_container">  
-				<ul id="menu_items">  
-					<li class="menu_item on" style="border-radius:8px 0 0 8px" onmouseout="this.style.backgroundColor=''" onmouseover="this.style.backgroundColor='#77D1F6';this.style.borderRadius='8px 0 0 8px'"><a>系统管理</a></li>  
-					<li class="menu_item" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a>用户管理</a></li>  
-					<li class="menu_item" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a>新闻管理</a></li>  
-					<li class="menu_item" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a>新闻管理</a></li>  
-					<li class="menu_item" style="border-radius:8px 0 0 8px;border:0px;" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.borderRadius='0 8px 8px 0';this.style.fontWeight='bold'"><a>邮件管理</a></li> 
+				<ul id="menu_items"> 
+					<% if(request.getParameter("action_type").equals("1")) { %>
+					<li class="menu_item on" style="border-radius:8px 0 0 8px" onmouseout="this.style.backgroundColor=''" onmouseover="this.style.backgroundColor='#77D1F6';this.style.borderRadius='8px 0 0 8px'"><a href = "system.jsp?action_type=1">我的面板</a></li>  
+					<% } else {%>
+					<li class="menu_item" style="border-radius:8px 0 0 8px" onmouseout="this.style.backgroundColor=''" onmouseover="this.style.backgroundColor='#77D1F6';this.style.borderRadius='8px 0 0 8px'"><a href = "system.jsp?action_type=1">我的面板</a></li>  
+					<% } %>
+					<% if(request.getParameter("action_type").equals("2")) { %>
+					<li class="menu_item on" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a href = "system.jsp?action_type=2">客户系统</a></li>  
+					<% } else {%>
+					<li class="menu_item" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a href = "system.jsp?action_type=2">客户系统</a></li>  
+					<% } %>
+					<% if(request.getParameter("action_type").equals("3")) { %>
+					<li class="menu_item" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a href = "system.jsp?action_type=3">服务管理</a></li>   
+					<% } else {%>
+					<li class="menu_item" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.fontWeight='bold'"><a href = "system.jsp?action_type=3">服务管理</a></li>   
+					<% } %>
+					
+					
+					<li class="menu_item" style="border-radius:8px 0 0 8px;border:0px;" onmouseout="this.style.backgroundColor='';this.style.fontWeight='normal'" onmouseover="this.style.backgroundColor='#77D1F6';this.style.borderRadius='0 8px 8px 0';this.style.fontWeight='bold'"><a onclick="set_action();">系统配置</a></li> 
 				</ul>  
 			</div>  
         </div>  
         <div id="user_info">  
-            <div id="welcome">欢迎<%= request.getParameter("username") %>使用本系统</div>  
-            <div id="logout">安全退出</div>  
+            <div id="welcome">欢迎<%= session.getAttribute("name") %>使用本系统</div>  
+            <div id="logout"><a href = "logout.jsp">安全退出</a></div>  
         </div>  
     </div>
 <div id="navigator">  
-    <iframe src="tree.html"></iframe>  
+    <iframe name="tree" id="treeframe" src="tree.jsp?action_type=<%=request.getParameter("action_type")%>"></iframe>  
 </div>  
 <div id="main">  
-    <iframe name="MainFrame" src="main.html"></iframe>  
+    <iframe name="main" id="mainframe" src="main.jsp?submit=0"></iframe>  
 </div>
 <div id="footer">
-	<div id="text">Copyright ©  All Rights Reserved Powered By </div>
+	<div id="text">Copyright © 2015-2016 MiniVision. All rights reserved.</div>
 </div>  	
 </div>  
 

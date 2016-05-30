@@ -85,7 +85,7 @@ public final class TableConfigurations {
 				customerTable.addSchema("customer_password", varchar255);
 				customerTable.addSchema("customer_balance", INT);
 				customerTable.addSchema("customer_ip", varchar255);
-				customerTable.addSchema("customer_type", INT);	//	@TODO wtf
+				customerTable.addSchema("customer_type", varchar255);	//	@TODO wtf
 				customerTable.addSchema("customer_servicekey", varchar255);
 				customerTable.addSchema("customer_contactName", varchar255);
 				customerTable.addSchema("customer_areaId", varchar255);
@@ -125,19 +125,19 @@ public final class TableConfigurations {
 			else if ( i.equals("user_access")) {
 				Table userAccess = new Table(i);
 				userAccess.addSchema("user_type",INT);
-				userAccess.addSchema("personal_information",INT); //	¸öÈËÐÅÏ¢
-				userAccess.addSchema("change_password",INT); //	ÐÞ¸ÄÃÜÂë
-				userAccess.addSchema("create_customer",INT); //	ÐÂÔö¿Í»§
-				userAccess.addSchema("modify_customer",INT); //	ÐÞ¸Ä¿Í»§
-				userAccess.addSchema("profile_customer",INT); //	²é¿´¿Í»§
-				userAccess.addSchema("delete_customer",INT); //	É¾³ý¿Í»§
-				userAccess.addSchema("charge_customer",INT); //	¿Í»§³äÖµ
-				userAccess.addSchema("charge_log",INT); //		³äÖµ¼ÇÂ¼²é¿´
-				userAccess.addSchema("service_list",INT); //	·þÎñÁÐ±í
-				userAccess.addSchema("service_setup_price",INT); //	·þÎñ¶¨¼Û
-				userAccess.addSchema("service_price_log",INT);  //	¶¨¼Û²éÑ¯
-				userAccess.addSchema("service_analysis",INT); //	·þÎñÍ³¼Æ
-				userAccess.addSchema("service_details",INT); //	Ê¹ÓÃÏêÇé
+				userAccess.addSchema("personal_information",INT); //	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+				userAccess.addSchema("change_password",INT); //	ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
+				userAccess.addSchema("create_customer",INT); //	ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½
+				userAccess.addSchema("modify_customer",INT); //	ï¿½Þ¸Ä¿Í»ï¿½
+				userAccess.addSchema("profile_customer",INT); //	ï¿½é¿´ï¿½Í»ï¿½
+				userAccess.addSchema("delete_customer",INT); //	É¾ï¿½ï¿½ï¿½Í»ï¿½
+				userAccess.addSchema("charge_customer",INT); //	ï¿½Í»ï¿½ï¿½ï¿½Öµ
+				userAccess.addSchema("charge_log",INT); //		ï¿½ï¿½Öµï¿½ï¿½Â¼ï¿½é¿´
+				userAccess.addSchema("service_list",INT); //	ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+				userAccess.addSchema("service_setup_price",INT); //	ï¿½ï¿½ï¿½ñ¶¨¼ï¿½
+				userAccess.addSchema("service_price_log",INT);  //	ï¿½ï¿½ï¿½Û²ï¿½Ñ¯
+				userAccess.addSchema("service_analysis",INT); //	ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
+				userAccess.addSchema("service_details",INT); //	Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				tables.add(userAccess);
 			}
 			else if ( i.equals("machine_list")) {

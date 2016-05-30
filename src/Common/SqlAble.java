@@ -42,7 +42,7 @@ public abstract class SqlAble implements Cloneable{
 		return s ;
 	}
 	/**
-	 * (col1=value1,col2=value2,...£©
+	 * (col1=value1,col2=value2,...ï¿½ï¿½
 	 * @return set statement for sql 
 	 */
 	public String getSetStatement() {
@@ -144,7 +144,8 @@ public abstract class SqlAble implements Cloneable{
 					field.set(this, res.getString(field.getName()));
 				else if ( field.getType().isAssignableFrom(Date.class) ) {
 					SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-					field.set(this, timeFormat.parse( res.getTimestamp(field.getName()).toString() ));
+					String t = res.getTimestamp(field.getName()).toString();
+					field.set(this, timeFormat.parse( t ));
 				}
 				else if ( field.getType().isAssignableFrom(Long.class))
 					field.set(this, res.getLong(field.getName()));

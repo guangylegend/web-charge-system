@@ -28,12 +28,12 @@ public class generalDBAPI<T extends Common.SqlAble> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public int executeUpdate( T item  ) throws SQLException {
+	public int executeUpdate( String setClause ) throws SQLException {
 		int r;
 		Connection con = DbConnector.conectionToDB();
 		Statement stmt = con.createStatement();
-		String s = "UPDATE " + item.getTableName() + " SET "
-				+ item.getSetStatement();
+		String s = "UPDATE " + clsInstance.getTableName() + " SET "
+				+ setClause;
 		if ( whereClause != null )
 			s += " WHERE " + whereClause;
 		

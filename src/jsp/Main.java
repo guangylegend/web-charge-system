@@ -45,6 +45,8 @@ import org.eclipse.jetty.util.log.JavaUtilLog;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+import mysqlConnector.generalDBAPI;
+
 /**
  * Example of using JSP's with embedded jetty and not requiring
  * all of the overhead of a WebAppContext
@@ -58,13 +60,29 @@ public class Main
     {
     	
     	//for test
-    	mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
-		Common.UserInfo user = new Common.UserInfo();
-		//user.user_loginName = "admin3";
-		//user.user_password = "admin3";
-		//user.user_type = 0;
-		//con.inputNewUser(user);
     	
+    	mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
+    	con.init();
+    	
+		Common.UserInfo user = new Common.UserInfo();
+		user.user_name = "admin";
+		user.user_loginName = "admin";
+		user.user_password = "admin";
+		user.user_type = 3;
+		user.login_date = new java.util.Date();
+		con.inputNewUser(user);
+		
+		
+		Common.CustomerInfo c = new Common.CustomerInfo();
+		c.customer_name = "user";
+		c.customer_loginname = "user";
+		c.customer_password = "user";
+		c.customer_createdByUserId = 5;
+		con.inputNewCustomer(c);
+		
+		generalDBAPI<Common.CustomerInfo> api = new generalDBAPI<Common.CustomerInfo>( Common.CustomerInfo.class );
+		api.setWhere("customer_loginname = " + "'" + c.customer_loginname + "'")
+			.executeUpdate("customer_balance = customer_balance + " + 5);
     	
         int port = 8081;
         LoggingUtil.config();

@@ -7,7 +7,7 @@ public class CustomerInfo extends SqlAble{
 	public String customer_password;
 	public Integer customer_balance;	//	1 RMB = 100, money remained
 	public String customer_ip;	//	xx.xx.xx.xxs
-	public Integer customer_type;	//	@TODO wtf
+	public String customer_type;	//	@TODO wtf
 	public String customer_servicekey;
 	public String customer_contactName;
 	public String customer_areaId;
