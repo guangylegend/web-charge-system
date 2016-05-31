@@ -149,6 +149,8 @@ public abstract class SqlAble implements Cloneable{
 				}
 				else if ( field.getType().isAssignableFrom(Long.class))
 					field.set(this, res.getLong(field.getName()));
+				else if ( field.getType().isAssignableFrom(Boolean.class))
+					field.set(this, res.getInt(field.getName())!=0 );
 				else
 					System.err.print("unhandled type of field!");
 				

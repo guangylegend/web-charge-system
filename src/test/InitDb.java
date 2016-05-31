@@ -51,7 +51,7 @@ public class InitDb {
 		customer.customer_name = "test";
 		customer.customer_balance = 1000000000;
 		customer.customer_ip = "59.78.57.213";
-		customer.customer_type = 1;
+		customer.customer_type = "1";
 		customer.customer_servicekey = "123456";
 		customer.customer_contactName = "YaoLi";
 		customer.customer_areaId = "Shanghai";

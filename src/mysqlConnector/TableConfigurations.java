@@ -35,18 +35,20 @@ public final class TableConfigurations {
 									};
 	static boolean first = true ;
 	
+	public static String varchar30 = "VARCHAR(30)";
+	public static String varchar255 = "VARCHAR(255)";
+	public static String varcharMAX = "VARCHAR(3000)";
+	public static String INT = "INT";
+	public static String LONG = "BIGINT";
+	public static String DATE = "TIMESTAMP";
+	
 	public static void generateAllTables() {
 		
 		if ( !first )
 			return ;
 		first = false;
 		
-		String varchar30 = "VARCHAR(30)";
-		String varchar255 = "VARCHAR(255)";
-		String varcharMAX = "VARCHAR(3000)";
-		String INT = "INT";
-		String LONG = "BIGINT";
-		String DATE = "TIME";
+		
 		
 		for ( String i : tableNames ) {
 			/*
@@ -119,9 +121,12 @@ public final class TableConfigurations {
 				userToServices.addSchema("customer_id", INT);
 				userToServices.addSchema("service_id", INT);
 				userToServices.addSchema("fee", INT);
+				userToServices.addSchema("isActive", INT);
+				userToServices.addSchema("is_pay_each_time", INT);
+				userToServices.addSchema("free_until", DATE);
+				
 				tables.add(userToServices);
 			}
-			
 			else if ( i.equals("user_access")) {
 				Table userAccess = new Table(i);
 				userAccess.addSchema("user_type",INT);
@@ -175,6 +180,7 @@ public final class TableConfigurations {
 				table.addSchema("user_id", INT);
 				table.addSchema("new_price", INT);
 				table.addSchema("old_price", INT);
+				table.addSchema("free_until", DATE);
 				tables.add(table);
 			}
 			else if ( i.equals("charge_log")) {

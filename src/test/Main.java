@@ -6,8 +6,10 @@ import java.util.Date;
 
 import Common.APILog;
 import Common.CustomerInfo;
+import Common.Service;
 import Common.ServicePara;
 import Common.UserInfo;
+import Common.customerService;
 import Common.machine;
 import mysqlConnector.DbConnector;
 import mysqlConnector.generalDBAPI;
@@ -16,9 +18,72 @@ public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, SQLException {
 		//Test();
 		//test2();
-		test3();
+		//test3();
+		testPrice();
 		//yncWrite();
 		//validCheck();
+	}
+	public static void testPrice() throws ClassNotFoundException, SQLException {
+		//	test for pay each time
+		
+		Common.CustomerInfo c = new Common.CustomerInfo();
+		Common.Service s = new Service();
+		Common.customerService cs = new customerService();
+		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
+		generalDBAPI<Common.customerService> csAPI = new generalDBAPI<Common.customerService>(Common.customerService.class);
+		generalDBAPI<Common.CustomerInfo> cAPI = new generalDBAPI<Common.CustomerInfo>(Common.CustomerInfo.class);
+		
+		con.init();
+		
+		
+		//	register customer
+		c.customer_loginname = "testPriceCustomer";
+		c.customer_password = "temp";
+		c.customer_createdByUserId = 0;
+		con.inputNewCustomer(c);
+		
+		//	register service
+		s.service_name = "testPriceService";
+		s.service_guidePrice = 1;
+		s.service_createTime = new java.util.Date();
+		con.inputNewService(s);
+		
+		
+		//	register relation
+		c = con.getCustomerInfo("testPriceCustomer");
+		s = con.getServiceByName("testPriceService");
+		cs.customer_id = c.customer_id;
+		cs.service_id = s.service_id;
+		cs.fee = 1 ;
+		cs.is_pay_each_time = 1;
+		csAPI.executeInsert(cs);
+		
+		// set customer's money
+		cAPI.setWhere("customer_id = " + c.customer_id)
+			.executeUpdate("customer_balance = 100");
+		
+		//	set pay for each time
+		csAPI.setWhere("customer_id = " + c.customer_id)
+			.setWhereAnd("service_id =" + s.service_id)
+			.executeUpdate("is_pay_each_time = 1");
+		//	test pay cost per time
+		for ( int i = 0 ; i < 5 ; ++i ) {
+			
+			ArrayList<customerService> x = csAPI.setWhere("customer_id = " + c.customer_id)
+					.setWhereAnd("service_id = "+ s.service_id).executeSelect();
+			if ( x.size() != 0 ) {
+				System.out.println("fee is:" + x.get(0).fee);
+				
+				cAPI.clear().setWhere("customer_id = " + c.customer_id)
+						.executeUpdate("customer_balance = customer_balance - " + x.get(0).fee );
+				
+				int remain = cAPI.clear().setWhere("customer_id = " + c.customer_id).executeSelect().get(0).customer_balance;
+				System.out.println("remained money: " + remain);
+			}
+			else {
+				System.err.println("cannot find relation between service and customer!");
+			}
+		}
 	}
 	public static void validCheck() throws ClassNotFoundException, SQLException {
 		Common.CustomerInfo c = new Common.CustomerInfo();
@@ -180,7 +245,7 @@ public class Main {
 		
 		c = new Common.CustomerInfo();
 		c.customer_balance = 1200;
-		api.clear().setWhere("customer_name=\'new2\'").executeUpdate(c);
+		api.clear().setWhere("customer_name=\'new2\'").executeUpdate("customer_balance = customer_balance + 1200");
 		list = api.clear().setOrderBy("customer_balance")
 				.setTop(1).executeSelect();
 		System.err.println(list);

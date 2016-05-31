@@ -2,6 +2,8 @@ package Common;
 
 import java.util.Date;
 
+import mysqlConnector.TableConfigurations;
+
 public class chargeLog extends SqlAble{
 	public Long sid;
 	public Integer old_balance;
@@ -14,7 +16,7 @@ public class chargeLog extends SqlAble{
 	public String description;	//	description
 	@Override
 	public String getTableName() {
-		return "charge_log";
+		return TableConfigurations.tableNames[11];
 	}
 	
 }

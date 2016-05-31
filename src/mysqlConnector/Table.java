@@ -68,6 +68,10 @@ public class Table {
 		res += "(" ;
 		for ( int i = 0 ; i < schema.size() ; ++i ) {
 			res += schema.get(i).columnName + " " + schema.get(i).type;
+			
+			if ( schema.get(i).type.equals(TableConfigurations.DATE))
+				res += " DEFAULT '2000-1-1 00:00:00'";
+			
 			if ( schema.get(i).autoInc)
 				res += " NOT NULL AUTO_INCREMENT PRIMARY KEY";
 			if( schema.get(i).isPrimaryKey )
