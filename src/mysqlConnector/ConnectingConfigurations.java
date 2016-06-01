@@ -11,17 +11,10 @@ public final class ConnectingConfigurations {
 	static public String validCheckUrl(int index) {
 		return "jdbc:mysql://" + hostIp[index] ;
 	}
-	
-	static public String getConnectingUrl() {
-		//return "jdbc:mysql://" + hostIp[index] ;
+	static public String getCoreURL() {
 		String s = "jdbc:mysql:loadbalance://";
-		//s += getHostIp(0) + "," + getHostIp(1);
-		
 		for ( String i : hostIp ) {
-			//s += "address=(type=master)(host=" + getHostIp(0) + ")" + ",";
-			//s += "address=(type=slave)(host=" + getHostIp(0) + ")" + ",";
 			s += i + ",";
-			
 			break;
 		}
 		
@@ -29,8 +22,22 @@ public final class ConnectingConfigurations {
 			s = s.substring(0, s.length()-1);
 		return s ;
 	}
+	
+	static public String getConnectingUrl() {
+		return getCoreURL() + "?" 
+				+ "user=" + userName
+				+ "&password=" + password
+				//+ "&useUnicode=true"
+				//+ "&characterEncoding=uft8"
+				;
+	}
 	static public String getConnectingUrlWithDatabaseName() {
-		return getConnectingUrl() + "/" + dbName;
+		return getCoreURL() + "/" + dbName + "?" 
+				+ "user=" + userName
+				+ "&password=" + password
+				//+ "&useUnicode=true"
+				//+ "&characterEncoding=utf8"
+				;
 	}
 	static public String getConnectingUserName() {
 		return userName;

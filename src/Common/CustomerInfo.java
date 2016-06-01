@@ -13,6 +13,12 @@ public class CustomerInfo extends SqlAble{
 	public String customer_areaId;
 	public Integer customer_createdByUserId;
 	
+	public String customer_contactmail;
+	public String customer_contactphone;
+	public String customer_BDmail;
+	public String customer_BDname;
+	public String customer_BDphone;
+	
 	public CustomerInfo() {}
 	@Override
 	public String getTableName() {

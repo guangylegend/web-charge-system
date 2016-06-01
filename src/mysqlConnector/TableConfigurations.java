@@ -92,6 +92,12 @@ public final class TableConfigurations {
 				customerTable.addSchema("customer_contactName", varchar255);
 				customerTable.addSchema("customer_areaId", varchar255);
 				customerTable.addSchema("customer_createdByUserId", INT);
+				customerTable.addSchema("customer_contactmail",varchar255);
+				customerTable.addSchema("customer_contactphone",varchar255);
+				customerTable.addSchema("customer_BDmail",varchar255);
+				customerTable.addSchema("customer_BDname",varchar255);
+				customerTable.addSchema("customer_BDphone",varchar255);
+				
 				tables.add(customerTable);
 			}
 			/*
@@ -196,6 +202,23 @@ public final class TableConfigurations {
 				table.addSchema("additional_chargevalue", INT);
 				
 				tables.add(table);
+			}
+			else if ( i.equals("service_para")) {
+
+				Table table = new Table(i);
+				table.addSchema("service_id", INT).setUnique();
+				table.addSchema("para_name", varchar255);
+				table.addSchema("para_type", varchar255);
+				tables.add(table);
+			}
+			else if ( i.equals("user_type_list")) {
+				Table table = new Table(i);
+				table.addSchema("user_type", INT);
+				table.addSchema("description", varchar255);
+				tables.add(table);
+			}
+			else {
+				System.err.println( i + " not init!!!!!!!!");
 			}
 		}
 	}

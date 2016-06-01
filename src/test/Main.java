@@ -37,7 +37,7 @@ public class Main {
 		
 		
 		//	register customer
-		c.customer_loginname = "testPriceCustomer";
+		c.customer_loginname = "哈哈";
 		c.customer_password = "temp";
 		c.customer_createdByUserId = 0;
 		con.inputNewCustomer(c);
@@ -50,7 +50,8 @@ public class Main {
 		
 		
 		//	register relation
-		c = con.getCustomerInfo("testPriceCustomer");
+		c = con.getCustomerInfo("哈哈");
+		System.out.println(c);
 		s = con.getServiceByName("testPriceService");
 		cs.customer_id = c.customer_id;
 		cs.service_id = s.service_id;
