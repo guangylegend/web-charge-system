@@ -19,10 +19,39 @@ public class Main {
 		//Test();
 		//test2();
 		//test3();
-		testPrice();
+		//testPrice();
+		testUserCustomerTree();
 		//yncWrite();
 		//validCheck();
 	}
+	public static void testUserCustomerTree() throws SQLException, ClassNotFoundException {
+		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
+		Common.UserInfo u = new Common.UserInfo();
+		Common.CustomerInfo c = new Common.CustomerInfo();
+		con.init();
+		
+		u.user_loginName = "legendks";
+		u.user_password = "hahahahaha";
+		u.user_name = "yangguang";
+		u.user_createdById = null;
+		con.inputNewUser(u);
+		
+		u.user_loginName = "legendks2";
+		u.user_password = "hahahahaha";
+		u.user_name = "yangguang2";
+		u.user_createdById = 1 ;
+		con.inputNewUser(u);
+		
+		c.customer_name = "customer";
+		c.customer_password = "no-password";
+		c.customer_createdByUserId = 2;
+		c.customer_loginname = "yangguangpkpk";
+		con.inputNewCustomer(c);
+		
+		System.out.println(con.getDownStreamUsers(1));
+		System.out.println(con.getDownStreamCustomers(1));
+	}
+	
 	public static void testPrice() throws ClassNotFoundException, SQLException {
 		//	test for pay each time
 		

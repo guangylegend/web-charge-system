@@ -3,10 +3,17 @@ package mysqlConnector;
  * Connection settings
  */
 public final class ConnectingConfigurations {
+	/*
 	static String[] hostIp = {"139.196.242.196","139.196.242.221"};
 	static String userName = "sync";
 	static String password = "Minivision-2015";
 	static String dbName = "Minivision";
+	*/
+	static String[] hostIp = {"139.196.242.196"};
+	static String userName = "test";
+	static String password = "test";
+	static String dbName = "foo";
+	
 	
 	static public String validCheckUrl(int index) {
 		return "jdbc:mysql://" + hostIp[index] ;

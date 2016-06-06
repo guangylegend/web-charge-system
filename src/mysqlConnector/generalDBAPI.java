@@ -24,7 +24,25 @@ public class generalDBAPI<T extends Common.SqlAble> {
 	}
 	
 	/**
-	 * 
+	 * Execute an delete statement like "DELETE FROM xxx [WHERE @whereClause]"
+	 * @throws SQLException 
+	 */
+	public int executeDelete() throws SQLException {
+		int r;
+		Connection con = DbConnector.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "DELETE FROM " + clsInstance.getTableName() ;
+		
+		if ( whereClause != null )
+			s += " WHERE " + whereClause;
+		
+		r = stmt.executeUpdate(s);
+		con.close();
+		return r;
+	}
+	
+	/**
+	 * Execute an update statement like "UPDATE xxx SET @setClause [WHERE @whereClause]". Please setWHere() before execute. 
 	 * @return
 	 * @throws SQLException
 	 */
@@ -41,6 +59,11 @@ public class generalDBAPI<T extends Common.SqlAble> {
 		con.close();
 		return r;
 	}
+	/**
+	 * Execute a select statement like "SELECT * FROM xxx [WHERE @whereClause] [ORDER BY @orderClause] [LIMIT @top]". Please setWhere(), setOrder(), setTop() before execute. 
+	 * @return
+	 * @throws SQLException
+	 */
 	public ArrayList<T> executeSelect() throws SQLException {
 		ArrayList<T> res = new ArrayList<T>();
 		
@@ -64,7 +87,7 @@ public class generalDBAPI<T extends Common.SqlAble> {
 	}
 	
 	/**
-	 * Insert item into database.
+	 * Insert @item into database.
 	 * @param item
 	 * @return
 	 * @throws SQLException 

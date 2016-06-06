@@ -56,7 +56,8 @@ public final class TableConfigurations {
 			 */
 			if ( i.equals("credit_user") ) {
 				Table userTable = new Table(i);
-				userTable.addSchema("user_id", INT).setAutoInc(); // unique userId will be set automaticlly	
+				userTable.addSchema("user_id", INT).setAutoInc(); // unique userId will be set automaticlly
+				userTable.addSchema("user_createdById", INT);
 				userTable.addSchema("user_name", varchar255);	//	The real name of user
 				userTable.addSchema("user_loginName", varchar255).setIndex().setUnique();	// login name
 				userTable.addSchema("user_password", varchar255);	//	Encrypted password

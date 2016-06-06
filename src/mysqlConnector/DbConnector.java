@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.security.auth.login.Configuration;
@@ -159,7 +161,7 @@ public class DbConnector {
 		TableConfigurations.generateAllTables();
 		for ( int i = 0 ; i < TableConfigurations.tables.size() ; ++i ) {
 			Table t = TableConfigurations.tables.get(i);
-			System.err.println( t.getCreatTableStatement() );
+			//System.err.println( t.getCreatTableStatement() );
 			stmt.execute(t.getCreatTableStatement());
 			
 		}
@@ -170,87 +172,87 @@ void createRelations() throws SQLException {
 		Connection con = this.conectionToDB();
 
 		Statement stmt = con.createStatement();
-		//				BD¾­Àí	×Ü¼à		×Ü¾­Àí	ÔËÎ¬
-		//	¸öÈËÐÅÏ¢		true	true	true
-	    //	ÐÞ¸ÄÃÜÂë		true	true	true
-	    //	ÐÂÔö¿Í»§		true	true	true
-	    //	ÐÞ¸Ä¿Í»§		true	true	true
-	    //	²é¿´¿Í»§		true	true	true
-	    //	É¾³ý¿Í»§		false	false	true
-	    //	¿Í»§³äÖµ		false	true	true
-	    //	³äÖµ¼ÇÂ¼²é¿´	true	true	true
-	    //	·þÎñÁÐ±í		true	true	true
-	    //	·þÎñ¶¨¼Û		false	true	true
-	    //	¶¨¼Û²éÑ¯		true	true	true
-	    //	·þÎñÍ³¼Æ		true	true	true
-	    //	Ê¹ÓÃÏêÇé		true	true	true
+		//				BDï¿½ï¿½ï¿½ï¿½	ï¿½Ü¼ï¿½		ï¿½Ü¾ï¿½ï¿½ï¿½	ï¿½ï¿½Î¬
+		//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢		true	true	true
+	    //	ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½		true	true	true
+	    //	ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½		true	true	true
+	    //	ï¿½Þ¸Ä¿Í»ï¿½		true	true	true
+	    //	ï¿½é¿´ï¿½Í»ï¿½		true	true	true
+	    //	É¾ï¿½ï¿½ï¿½Í»ï¿½		false	false	true
+	    //	ï¿½Í»ï¿½ï¿½ï¿½Öµ		false	true	true
+	    //	ï¿½ï¿½Öµï¿½ï¿½Â¼ï¿½é¿´	true	true	true
+	    //	ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½		true	true	true
+	    //	ï¿½ï¿½ï¿½ñ¶¨¼ï¿½		false	true	true
+	    //	ï¿½ï¿½ï¿½Û²ï¿½Ñ¯		true	true	true
+	    //	ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½		true	true	true
+	    //	Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½		true	true	true
 		
 		Common.UserAccessOperation o = new UserAccessOperation();
-		o.user_type = 1;	//	BD¾­Àí
-		o.personal_information = 1 ;	//	¸öÈËÐÅÏ¢
-		o.change_password = 1;	//	ÐÞ¸ÄÃÜÂë
-		o.create_customer = 1;	//	ÐÂÔö¿Í»§
-		o.modify_customer = 1;	//	ÐÞ¸Ä¿Í»§
-		o.profile_customer = 1;	//	²é¿´¿Í»§
-		o.delete_customer = 0;	//	É¾³ý¿Í»§
-		o.charge_customer = 0;	//	¿Í»§³äÖµ
-		o.charge_log = 1;	//		³äÖµ¼ÇÂ¼²é¿´
-		o.service_list = 1;	//	·þÎñÁÐ±í
-		o.service_setup_price = 0;	//	·þÎñ¶¨¼Û
-		o.service_price_log = 1;	//	¶¨¼Û²éÑ¯
-		o.service_analysis = 1;	//	·þÎñÍ³¼Æ
-		o.service_details = 1;	//	Ê¹ÓÃÏêÇé
+		o.user_type = 1;	//	BDï¿½ï¿½ï¿½ï¿½
+		o.personal_information = 1 ;	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+		o.change_password = 1;	//	ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
+		o.create_customer = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½
+		o.modify_customer = 1;	//	ï¿½Þ¸Ä¿Í»ï¿½
+		o.profile_customer = 1;	//	ï¿½é¿´ï¿½Í»ï¿½
+		o.delete_customer = 0;	//	É¾ï¿½ï¿½ï¿½Í»ï¿½
+		o.charge_customer = 0;	//	ï¿½Í»ï¿½ï¿½ï¿½Öµ
+		o.charge_log = 1;	//		ï¿½ï¿½Öµï¿½ï¿½Â¼ï¿½é¿´
+		o.service_list = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+		o.service_setup_price = 0;	//	ï¿½ï¿½ï¿½ñ¶¨¼ï¿½
+		o.service_price_log = 1;	//	ï¿½ï¿½ï¿½Û²ï¿½Ñ¯
+		o.service_analysis = 1;	//	ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
+		o.service_details = 1;	//	Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		stmt.execute("INSERT INTO " + TableConfigurations.tableNames[6] + o.getColumnNameStatement()
 							+ " values " + o.getValueStatement());
 		
-		o.user_type = 2;	//	×Ü¼à
-		o.personal_information = 1 ;	//	¸öÈËÐÅÏ¢
-		o.change_password = 1;	//	ÐÞ¸ÄÃÜÂë
-		o.create_customer = 1;	//	ÐÂÔö¿Í»§
-		o.modify_customer = 1;	//	ÐÞ¸Ä¿Í»§
-		o.profile_customer = 1;	//	²é¿´¿Í»§
-		o.delete_customer = 0;	//	É¾³ý¿Í»§
-		o.charge_customer = 1;	//	¿Í»§³äÖµ
-		o.charge_log = 1;	//		³äÖµ¼ÇÂ¼²é¿´
-		o.service_list = 1;	//	·þÎñÁÐ±í
-		o.service_setup_price = 1;	//	·þÎñ¶¨¼Û
-		o.service_price_log = 1;	//	¶¨¼Û²éÑ¯
-		o.service_analysis = 1;	//	·þÎñÍ³¼Æ
-		o.service_details = 1;	//	Ê¹ÓÃÏêÇé
+		o.user_type = 2;	//	ï¿½Ü¼ï¿½
+		o.personal_information = 1 ;	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+		o.change_password = 1;	//	ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
+		o.create_customer = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½
+		o.modify_customer = 1;	//	ï¿½Þ¸Ä¿Í»ï¿½
+		o.profile_customer = 1;	//	ï¿½é¿´ï¿½Í»ï¿½
+		o.delete_customer = 0;	//	É¾ï¿½ï¿½ï¿½Í»ï¿½
+		o.charge_customer = 1;	//	ï¿½Í»ï¿½ï¿½ï¿½Öµ
+		o.charge_log = 1;	//		ï¿½ï¿½Öµï¿½ï¿½Â¼ï¿½é¿´
+		o.service_list = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+		o.service_setup_price = 1;	//	ï¿½ï¿½ï¿½ñ¶¨¼ï¿½
+		o.service_price_log = 1;	//	ï¿½ï¿½ï¿½Û²ï¿½Ñ¯
+		o.service_analysis = 1;	//	ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
+		o.service_details = 1;	//	Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		stmt.execute("INSERT INTO " + TableConfigurations.tableNames[6] + o.getColumnNameStatement()
 							+ " values " + o.getValueStatement());
 		
-		o.user_type = 3;	//	×Ü¾­Àí
-		o.personal_information = 1 ;	//	¸öÈËÐÅÏ¢
-		o.change_password = 1;	//	ÐÞ¸ÄÃÜÂë
-		o.create_customer = 1;	//	ÐÂÔö¿Í»§
-		o.modify_customer = 1;	//	ÐÞ¸Ä¿Í»§
-		o.profile_customer = 1;	//	²é¿´¿Í»§
-		o.delete_customer = 1;	//	É¾³ý¿Í»§
-		o.charge_customer = 1;	//	¿Í»§³äÖµ
-		o.charge_log = 1;	//		³äÖµ¼ÇÂ¼²é¿´
-		o.service_list = 1;	//	·þÎñÁÐ±í
-		o.service_setup_price = 1;	//	·þÎñ¶¨¼Û
-		o.service_price_log = 1;	//	¶¨¼Û²éÑ¯
-		o.service_analysis = 1;	//	·þÎñÍ³¼Æ
-		o.service_details = 1;	//	Ê¹ÓÃÏêÇé
+		o.user_type = 3;	//	ï¿½Ü¾ï¿½ï¿½ï¿½
+		o.personal_information = 1 ;	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+		o.change_password = 1;	//	ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
+		o.create_customer = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½
+		o.modify_customer = 1;	//	ï¿½Þ¸Ä¿Í»ï¿½
+		o.profile_customer = 1;	//	ï¿½é¿´ï¿½Í»ï¿½
+		o.delete_customer = 1;	//	É¾ï¿½ï¿½ï¿½Í»ï¿½
+		o.charge_customer = 1;	//	ï¿½Í»ï¿½ï¿½ï¿½Öµ
+		o.charge_log = 1;	//		ï¿½ï¿½Öµï¿½ï¿½Â¼ï¿½é¿´
+		o.service_list = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+		o.service_setup_price = 1;	//	ï¿½ï¿½ï¿½ñ¶¨¼ï¿½
+		o.service_price_log = 1;	//	ï¿½ï¿½ï¿½Û²ï¿½Ñ¯
+		o.service_analysis = 1;	//	ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
+		o.service_details = 1;	//	Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		stmt.execute("INSERT INTO " + TableConfigurations.tableNames[6] + o.getColumnNameStatement()
 							+ " values " + o.getValueStatement());
 		
-		o.user_type = 4;	//	ÔËÎ¬
-		o.personal_information = 1 ;	//	¸öÈËÐÅÏ¢
-		o.change_password = 1;	//	ÐÞ¸ÄÃÜÂë
-		o.create_customer = 1;	//	ÐÂÔö¿Í»§
-		o.modify_customer = 1;	//	ÐÞ¸Ä¿Í»§
-		o.profile_customer = 1;	//	²é¿´¿Í»§
-		o.delete_customer = 1;	//	É¾³ý¿Í»§
-		o.charge_customer = 1;	//	¿Í»§³äÖµ
-		o.charge_log = 1;	//		³äÖµ¼ÇÂ¼²é¿´
-		o.service_list = 1;	//	·þÎñÁÐ±í
-		o.service_setup_price = 1;	//	·þÎñ¶¨¼Û
-		o.service_price_log = 1;	//	¶¨¼Û²éÑ¯
-		o.service_analysis = 1;	//	·þÎñÍ³¼Æ
-		o.service_details = 1;	//	Ê¹ÓÃÏêÇé
+		o.user_type = 4;	//	ï¿½ï¿½Î¬
+		o.personal_information = 1 ;	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+		o.change_password = 1;	//	ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
+		o.create_customer = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½
+		o.modify_customer = 1;	//	ï¿½Þ¸Ä¿Í»ï¿½
+		o.profile_customer = 1;	//	ï¿½é¿´ï¿½Í»ï¿½
+		o.delete_customer = 1;	//	É¾ï¿½ï¿½ï¿½Í»ï¿½
+		o.charge_customer = 1;	//	ï¿½Í»ï¿½ï¿½ï¿½Öµ
+		o.charge_log = 1;	//		ï¿½ï¿½Öµï¿½ï¿½Â¼ï¿½é¿´
+		o.service_list = 1;	//	ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+		o.service_setup_price = 1;	//	ï¿½ï¿½ï¿½ñ¶¨¼ï¿½
+		o.service_price_log = 1;	//	ï¿½ï¿½ï¿½Û²ï¿½Ñ¯
+		o.service_analysis = 1;	//	ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
+		o.service_details = 1;	//	Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		stmt.execute("INSERT INTO " + TableConfigurations.tableNames[6] + o.getColumnNameStatement()
 							+ " values " + o.getValueStatement());
 		
@@ -641,6 +643,97 @@ void createRelations() throws SQLException {
 		con.close();
 		return r;
 	}
+	
+	/**
+	 * Find all users created or indirectly created by a user.
+	 * @param userId
+	 * @return
+	 * @throws SQLException
+	 */
+	public java.util.ArrayList<Common.UserInfo> getDownStreamUsers(int userId) throws SQLException {
+		java.util.ArrayList<Common.UserInfo> userIds = new ArrayList<Common.UserInfo>();
+		java.util.HashMap<Integer, java.util.ArrayList<Integer> > edge = new java.util.HashMap<Integer, java.util.ArrayList<Integer>>();
+		java.util.HashMap<Integer, Common.UserInfo> information = new HashMap<Integer, Common.UserInfo>();
+		
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "SELECT * FROM " 
+				+ TableConfigurations.tableNames[0];
+		ResultSet res = stmt.executeQuery(s);
+		while ( res.next() ) {
+			Integer st, ed;
+			ed = res.getInt("user_id");
+			st = res.getInt("user_createdById");
+			
+			if ( !res.wasNull() ) {
+				System.err.println(st + " --> " + ed);
+				if ( !edge.containsKey(st) )
+					edge.put(st, new java.util.ArrayList<>());
+				edge.get(st).add(ed);
+			}
+			Common.UserInfo u = new UserInfo();
+			u.fetchFromResultSet(res);
+			information.put(ed, u);
+			if ( u.user_id == userId )
+				userIds.add(u);
+		}
+		con.close();
+		
+		for ( int i = 0 ; i < userIds.size() ; ++i ) {
+			ArrayList<Integer> t = edge.get( userIds.get(i).user_id );
+			if ( t != null ) {
+				for ( Integer j : t ) {
+					userIds.add( information.get(j) );
+				}
+			}
+		}
+		return userIds;
+	}
+	
+	/**
+	 * Find all customers created or indirectly created by a user.
+	 * @param userId
+	 * @return
+	 * @throws SQLException
+	 */
+	public java.util.ArrayList<Common.CustomerInfo> getDownStreamCustomers(int userId) throws SQLException {
+		java.util.ArrayList<Common.CustomerInfo> customerIds = new ArrayList<Common.CustomerInfo>();
+		java.util.HashMap<Integer, java.util.ArrayList<Integer> > edge = new java.util.HashMap<Integer, java.util.ArrayList<Integer>>();
+		java.util.HashMap<Integer, Common.CustomerInfo> information = new HashMap<Integer, Common.CustomerInfo>();
+		
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "SELECT * FROM " 
+				+ TableConfigurations.tableNames[1];
+		ResultSet res = stmt.executeQuery(s);
+		while ( res.next() ) {
+			int st, ed;
+			ed = res.getInt("customer_id");
+			st = res.getInt("customer_createdByUserId");
+			
+			if ( !edge.containsKey(st) )
+				edge.put(st, new java.util.ArrayList<>());
+			edge.get(st).add(ed);
+			Common.CustomerInfo c = new CustomerInfo();
+			c.fetchFromResultSet(res);
+			information.put(ed, c);
+		}
+		con.close();
+		
+		java.util.ArrayList<Common.UserInfo> us = this.getDownStreamUsers(userId);
+		for ( Common.UserInfo u : us ) {
+			ArrayList<Integer> l = edge.get(u.user_id);
+			if ( l != null )
+			for ( Integer nn : l ) {
+				customerIds.add(information.get(nn));
+			}
+		}
+		
+		return customerIds;
+	}
+	
+	
+	
 	/*
 	public ArrayList<Common.APILog> getApiLogByCustomerName(String customer_loginname) throws SQLException {
 		ArrayList<Common.APILog> res = new ArrayList<>();

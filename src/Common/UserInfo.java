@@ -7,6 +7,7 @@ import sun.security.jca.GetInstance;
 
 public class UserInfo extends SqlAble{
 	public Integer user_id;	//	Unique identity
+	public Integer user_createdById; 
 	public String user_name; //	
 	public String user_loginName;	//  Login name	
 	public String user_password; //	password
