@@ -59,7 +59,7 @@ public class Table {
 		schema.add( sch );
 		return sch;
 	}
-	String getCreatTableStatement() {
+	public String getCreatTableStatement() {
 		String res = "CREATE TABLE ";
 		ArrayList<String> indexList = new ArrayList<String>();
 		ArrayList<String> UniqueList = new ArrayList<String>();

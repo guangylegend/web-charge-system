@@ -12,6 +12,8 @@ import Common.UserInfo;
 import Common.customerService;
 import Common.machine;
 import mysqlConnector.DbConnector;
+import mysqlConnector.Table;
+import mysqlConnector.TableConfigurations;
 import mysqlConnector.generalDBAPI;
 
 public class Main {
@@ -20,9 +22,17 @@ public class Main {
 		//test2();
 		//test3();
 		//testPrice();
-		testUserCustomerTree();
+		//testUserCustomerTree();
+		printCreateTables();
 		//yncWrite();
 		//validCheck();
+	}
+	public static void printCreateTables() {
+		TableConfigurations.generateAllTables();
+		for ( int i = 0 ; i < TableConfigurations.tables.size() ; ++i ) {
+			Table t = TableConfigurations.tables.get(i);
+			System.err.println( t.getCreatTableStatement() );
+		}
 	}
 	public static void testUserCustomerTree() throws SQLException, ClassNotFoundException {
 		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();

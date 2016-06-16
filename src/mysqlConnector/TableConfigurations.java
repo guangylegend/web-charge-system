@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public final class TableConfigurations {
-	static ArrayList<Table> tables = new ArrayList<Table>();
+	public static ArrayList<Table> tables = new ArrayList<Table>();
 	/**
 	 * Table lists:
 	 * 0. credit_user - ();
@@ -19,6 +19,10 @@ public final class TableConfigurations {
 	 * 9. api_log - ();
 	 * 10. price_log - ()
 	 * 11. charge_log - ()
+	 * 
+	 * 12. charge_monthly_log - ()
+	 * 13. operation
+	 * 14. user_access_operation
 	 */
 	static public String[] tableNames = new String[]{"credit_user"
 									,"credit_customer"
@@ -32,6 +36,9 @@ public final class TableConfigurations {
 									,"api_log"
 									,"price_log"
 									,"charge_log"
+									,"charge_monthly_log"
+									,"operation"
+									,"user_access_operation"
 									};
 	static boolean first = true ;
 	
@@ -47,8 +54,6 @@ public final class TableConfigurations {
 		if ( !first )
 			return ;
 		first = false;
-		
-		
 		
 		for ( String i : tableNames ) {
 			/*
@@ -134,7 +139,7 @@ public final class TableConfigurations {
 				
 				tables.add(userToServices);
 			}
-			else if ( i.equals("user_access")) {
+			/* else if ( i.equals("user_access")) {
 				Table userAccess = new Table(i);
 				userAccess.addSchema("user_type",INT);
 				userAccess.addSchema("personal_information",INT); //	������Ϣ
@@ -151,7 +156,7 @@ public final class TableConfigurations {
 				userAccess.addSchema("service_analysis",INT); //	����ͳ��
 				userAccess.addSchema("service_details",INT); //	ʹ������
 				tables.add(userAccess);
-			}
+			}*/
 			else if ( i.equals("machine_list")) {
 				Table machine_id = new Table(i);
 				machine_id.addSchema("machine_id", INT).setAutoInc();
@@ -216,6 +221,32 @@ public final class TableConfigurations {
 				Table table = new Table(i);
 				table.addSchema("user_type", INT);
 				table.addSchema("description", varchar255);
+				tables.add(table);
+			}
+			else if ( i.equals("charge_monthly_log")) {
+				Table table = new Table(i);
+				table.addSchema("sid", INT).setAutoInc();
+				table.addSchema("user_id",INT);
+				table.addSchema("customer_id",INT);
+				table.addSchema("charge_value",INT);
+				table.addSchema("additional_chargevalue",INT);
+				table.addSchema("chargeDate",DATE);
+				table.addSchema("startDate",DATE);
+				table.addSchema("endDate",DATE);
+				table.addSchema("description",varchar255);
+
+				tables.add(table);
+			}
+			else if ( i.equals("operation")) {
+				Table table = new Table(i);
+				table.addSchema("operation_id", INT).setAutoInc();
+				table.addSchema("name", varchar255);
+				tables.add(table);
+			}
+			else if ( i.equals("user_access_operation")) {
+				Table table = new Table(i);
+				table.addSchema("user_type", INT);
+				table.addSchema("operation_id", INT);
 				tables.add(table);
 			}
 			else {
