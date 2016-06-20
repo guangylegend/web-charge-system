@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import Common.APILog;
 import Common.CustomerInfo;
 import Common.Service;
 import Common.SqlAble;
+import Common.StatisticPair;
 import Common.UserAccessOperation;
 import Common.UserInfo;
 import Common.loadbalance;
@@ -663,16 +665,101 @@ void createRelations() throws SQLException {
 		
 		return customerIds;
 	}
-	
-	public Common.StatisticPair getStatistic(String customer,String customer_type,String service_name,java.util.Date start_time,java.util.Date end_time) {
-		String selectContext = "count(*), sum(cost)";
-		String tableContext = "api_log"
+	String setStatisticTableContext(String customer_name ,String customer_type,String service_name) {
+		String tableContext = "api_log";
+		if ( service_name != null )
+			tableContext += "," + "credit_service";
+		if ( customer_name != null || customer_type != null )
+			tableContext += "," + "credit_customer";
+		return tableContext;
+	}
+	String setStatisticWhereClause( String customer_name ,String customer_type,String service_name,java.util.Date start_time,java.util.Date end_time ) {
+		String whereClause = "";
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
-		"select " + selectContext + " from " + tableContext + " where " + ; 
+		if ( start_time != null || end_time != null ) {
+			if ( start_time != null ) {
+				whereClause += "api_log.date >= " + "'" + f.format(start_time) + "'";
+				whereClause += " AND ";
+			}
+			if ( end_time != null ) {
+				whereClause += "api_log.date <= " + "'" + f.format(start_time) + "'";
+				whereClause += " AND ";
+			}
+		}
 		
-		return null;
+		if ( service_name != null ) {
+			
+			whereClause += "api_log.service_id = credit_service.service_id AND credit_service.service_name = "
+						+	"'" + service_name + "'"
+						+ " AND ";
+		}
+		if ( customer_name != null || customer_type != null ) {
+			
+			whereClause += "credit_customer.customer_id = api_log.customer_id" 
+							+ " AND "; 
+			
+			if ( customer_name != null )
+				whereClause += "credit_customer.customer_name = "
+								+ "'" + customer_name + "'"
+								+ " AND ";
+			if ( customer_type != null )
+				whereClause += "credit_customer.customer_type = "
+								+ "'" + customer_type + "'"
+								+ " AND ";
+		}
+		return whereClause;
 	}
 	
+	public Common.StatisticPair getStatisticCost(String customer_name ,String customer_type,String service_name,java.util.Date start_time,java.util.Date end_time) throws SQLException {
+		String selectContext = "count(*), sum(cost)";
+		String tableContext = "api_log";
+		String whereClause = "";
+		
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		
+		tableContext = setStatisticTableContext(customer_name, customer_type, service_name);
+		whereClause = setStatisticWhereClause(customer_name, customer_type, service_name, start_time, end_time);
+		
+		String s = "select " + selectContext + " from " + tableContext ;
+		if ( whereClause.length() > 0 ) {
+			s += " where " + whereClause.substring(0, whereClause.length()-5);
+		}
+		
+		ResultSet res = stmt.executeQuery(s);
+		Common.StatisticPair r = new StatisticPair();
+		while ( res.next() ) {
+			r.total_cost = res.getInt("sum(cost)");
+			r.total_size = res.getInt("count(*)");
+		}
+		return r;
+	}
+	public ArrayList<Common.APILog> getStatisticArray(String customer_name ,String customer_type,String service_name,java.util.Date start_time,java.util.Date end_time) throws SQLException {
+		String selectContext = "api_log.*";
+		String tableContext = "api_log";
+		String whereClause = "";
+		
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		
+		tableContext = setStatisticTableContext(customer_name, customer_type, service_name);
+		whereClause = setStatisticWhereClause(customer_name, customer_type, service_name, start_time, end_time);
+		
+		String s = "select " + selectContext + " from " + tableContext ;
+		if ( whereClause.length() > 0 ) {
+			s += " where " + whereClause.substring(0, whereClause.length()-5);
+		}
+		ResultSet res = stmt.executeQuery(s);
+		ArrayList<Common.APILog> r = new ArrayList<Common.APILog>();
+		while ( res.next() ) {
+			Common.APILog e = new APILog();
+			e.fetchFromResultSet(res);
+			r.add(e);
+		}
+		return r;
+
+	}
 	
 	/*
 	public ArrayList<Common.APILog> getApiLogByCustomerName(String customer_loginname) throws SQLException {

@@ -1,6 +1,7 @@
 package test;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -23,7 +24,8 @@ public class Main {
 		//test3();
 		//testPrice();
 		//testUserCustomerTree();
-		printCreateTables();
+		//printCreateTables();
+		testStatistic();
 		//yncWrite();
 		//validCheck();
 	}
@@ -33,6 +35,23 @@ public class Main {
 			Table t = TableConfigurations.tables.get(i);
 			System.err.println( t.getCreatTableStatement() );
 		}
+	}
+	public static void testStatistic() throws SQLException, ClassNotFoundException {
+		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
+		
+		java.util.Date ddd = new Date();
+		ddd.setYear(2016-1900);
+		ddd.setMonth(1);
+		ddd.setDate(1);
+		ddd.setHours(1);
+		ddd.setMinutes(1);
+		ddd.setSeconds(1);
+		Common.StatisticPair r = con.getStatisticCost(null, "1" , "2D", ddd , null );
+		System.err.println(r.total_size);
+		System.err.println(r.total_cost);
+		
+		ArrayList<Common.APILog> r2 = con.getStatisticArray(null, "1" , "2D", ddd , null );
+		System.err.println(r2.size());
 	}
 	public static void testUserCustomerTree() throws SQLException, ClassNotFoundException {
 		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();
