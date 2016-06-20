@@ -664,6 +664,14 @@ void createRelations() throws SQLException {
 		return customerIds;
 	}
 	
+	public Common.StatisticPair getStatistic(String customer,String customer_type,String service_name,java.util.Date start_time,java.util.Date end_time) {
+		String selectContext = "count(*), sum(cost)";
+		String tableContext = "api_log"
+		
+		"select " + selectContext + " from " + tableContext + " where " + ; 
+		
+		return null;
+	}
 	
 	
 	/*

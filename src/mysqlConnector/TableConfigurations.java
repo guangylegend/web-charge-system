@@ -20,7 +20,7 @@ public final class TableConfigurations {
 	 * 10. price_log - ()
 	 * 11. charge_log - ()
 	 * 
-	 * 12. charge_monthly_log - ()
+	 * 12. month_price - ()
 	 * 13. operation
 	 * 14. user_access_operation
 	 */
@@ -36,7 +36,7 @@ public final class TableConfigurations {
 									,"api_log"
 									,"price_log"
 									,"charge_log"
-									,"charge_monthly_log"
+									,"month_price"
 									,"operation"
 									,"user_access_operation"
 									};
@@ -172,7 +172,7 @@ public final class TableConfigurations {
 			else if ( i.equals("api_log")) {
 				Table table = new Table(i);
 				table.addSchema("sid",LONG).setAutoInc();
-				table.addSchema("date", DATE);
+				table.addSchema("date", DATE).setIndex();
 				table.addSchema("customer_id", INT);
 				table.addSchema("service_id", INT);
 				table.addSchema("input", varcharMAX);
@@ -223,17 +223,15 @@ public final class TableConfigurations {
 				table.addSchema("description", varchar255);
 				tables.add(table);
 			}
-			else if ( i.equals("charge_monthly_log")) {
+			else if ( i.equals("month_price")) {
 				Table table = new Table(i);
 				table.addSchema("sid", INT).setAutoInc();
 				table.addSchema("user_id",INT);
 				table.addSchema("customer_id",INT);
-				table.addSchema("charge_value",INT);
-				table.addSchema("additional_chargevalue",INT);
-				table.addSchema("chargeDate",DATE);
+				table.addSchema("service_id",INT);
+				table.addSchema("value",INT);
 				table.addSchema("startDate",DATE);
 				table.addSchema("endDate",DATE);
-				table.addSchema("description",varchar255);
 
 				tables.add(table);
 			}
