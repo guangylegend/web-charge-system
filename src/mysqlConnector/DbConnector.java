@@ -167,6 +167,7 @@ public class DbConnector {
 			stmt.execute(t.getCreatTableStatement());
 			
 		}
+		stmt.execute("alter table " + TableConfigurations.tableNames[8] + " ENGINE=InnoDB");
 		con.close();
 	}
 void createRelations() throws SQLException {
@@ -520,7 +521,7 @@ void createRelations() throws SQLException {
 			
 			ResultSet r1 = con.createStatement().executeQuery("SELECT * FROM " 
 					+ TableConfigurations.tableNames[8]
-							+ " WHERE service_id = " + service.service_id);
+							+ " WHERE service_id = " + service.service_id + " FOR UPDATE");
 			if ( r1.next() ) {
 				l.fetchFromResultSet( r1 );
 				
