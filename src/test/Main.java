@@ -52,6 +52,9 @@ public class Main {
 		
 		ArrayList<Common.APILog> r2 = con.getStatisticArray(null, "1" , "2D", ddd , null );
 		System.err.println(r2.size());
+		
+		System.err.println( con.getTotalChargeValue(1));
+		System.err.println( con.getTotalAdditionalChargeValue(1));
 	}
 	public static void testUserCustomerTree() throws SQLException, ClassNotFoundException {
 		mysqlConnector.DbConnector con = new mysqlConnector.DbConnector();

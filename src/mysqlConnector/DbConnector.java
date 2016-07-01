@@ -36,7 +36,6 @@ import java.sql.ResultSet;
 /**
  * 
  * @author chensqi
- * Deprecated
  */
 public class DbConnector {
 	
@@ -676,7 +675,7 @@ void createRelations() throws SQLException {
 	}
 	String setStatisticWhereClause( String customer_name ,String customer_type,String service_name,java.util.Date start_time,java.util.Date end_time ) {
 		String whereClause = "";
-		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
 		
 		if ( start_time != null || end_time != null ) {
 			if ( start_time != null ) {
@@ -684,7 +683,12 @@ void createRelations() throws SQLException {
 				whereClause += " AND ";
 			}
 			if ( end_time != null ) {
-				whereClause += "api_log.date <= " + "'" + f.format(start_time) + "'";
+				java.util.Calendar cal = java.util.Calendar.getInstance();
+		        cal.setTime(end_time);
+		        cal.add(java.util.Calendar.DATE, 1);
+		        end_time = cal.getTime();
+
+				whereClause += "api_log.date <= " + "'" + f.format(end_time) + "'";
 				whereClause += " AND ";
 			}
 		}
@@ -760,6 +764,24 @@ void createRelations() throws SQLException {
 		}
 		return r;
 
+	}
+	
+	public int getTotalChargeValue( int customer_id ) throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "select " + "sum(charge_value)" + " from " + TableConfigurations.tableNames[11] ;
+		ResultSet res = stmt.executeQuery(s);
+		res.next();
+		return res.getInt(1);
+	}
+	
+	public int getTotalAdditionalChargeValue( int customer_id ) throws SQLException {
+		Connection con = this.conectionToDB();
+		Statement stmt = con.createStatement();
+		String s = "select " + "sum(additional_chargevalue)" + " from " + TableConfigurations.tableNames[11] ;
+		ResultSet res = stmt.executeQuery(s);
+		res.next();
+		return res.getInt(1);
 	}
 	
 	/*
