@@ -1,0 +1,202 @@
+* {  
+    background: none repeat scroll 0 0 transparent;  
+    border: 0 none;  
+    margin: 0;  
+    padding: 0;  
+    vertical-align: baseline;  
+}  
+body{  
+	
+    min-height:600px;  
+    min-width:1280px;  
+    overflow-y:hidden; 
+    overflow-x:hidden; 
+    
+}  
+#wrapper {  
+    
+    font-family: "lucida Grande",Tahoma,Arial;  
+    font-size: 12px;  
+    overflow: hidden;
+    margin:0px;  
+    padding:0px;
+    width:100%;  
+    height:100%;
+}  
+a:link,a:visited{
+    text-decoration:none;
+    text-align:center; 
+    color:black; 
+    font-size:14px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+}
+#header {  
+    float: left;  
+    height: 80px;  
+    position: relative;  
+    width: 100%;  
+    z-index: 10;  
+    text-align:center; 
+    background-color:#1C75BC;  
+    opacity:0.8; 
+    margin-top:-8px; 
+    border-radius: 8px;
+}  
+#logo {  
+    float: left;  
+    height: 38px;  
+    line-height:38px;  
+    vertical-align:middle;  
+    margin: 15px 0 0 1%;  
+    width: 60px;  
+}  
+#title {  
+    float: left;  
+    height: 38px;  
+    line-height:38px;  
+    vertical-align:middle;  
+    margin-left:15px; 
+    margin-top:23px; 
+    width: 120px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+    font-size:18px;  
+    font-weight:bold;  
+    text-align:center;  
+}  
+#menu{  
+    position:absolute;  
+    left:45%;  
+    margin-top:23px;  
+    margin-left:-300px;  
+    float: float;  
+    height: 38px;  
+    width:410px;  
+    line-height:38px;  
+    vertical-align:middle;  
+    text-align:center;  
+    border-radius: 8px;  
+    background-color:#000000;  
+    opacity:0.5;  
+}  
+#user_info {  
+    height: 35px;  
+    line-height:35px;  
+    vertical-align:middle;  
+    position: relative;  
+    float:right;  
+    margin-top:15px;  
+    margin-right:60px;  
+    width:240px;  
+    font-weight:bold;  
+    font-size:14px;  
+}  
+#welcome{ 
+    margin-top:8px; 
+    position: relative;  
+    float:left; 
+}  
+
+#logout{  
+    margin-top:8px;
+    position: relative;  
+    float:right;    
+}  
+
+#menu_container{ 
+    position:relative;  
+    margin:2px;  
+    height: 34px;  
+    line-height:34px;  
+    vertical-align:middle;  
+    border-radius: 8px;  
+    background-image: -moz-linear-gradient(top,#EBEBEB, #BFBFBF);  
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #EBEBEB),color-stop(1, #BFBFBF));  
+}  
+#menu_items{  
+    list-style:none;  
+    line-height: normal;  
+    height: 34px;  
+    line-height:34px;  
+    vertical-align:middle;  
+    font-size:14px;  
+    border:2px solid solid;  
+    border-right-style:groove;  
+}  
+.menu_item{  
+    display: list-item;  
+    float:left;  
+    width:100px;  
+    border-right:2px solid #F6F6F6;  
+    border-right-style:groove;  
+    cursor:pointer;  
+}  
+.on{  
+    display: list-item;  
+    float:left;  
+    width:100px;  
+    background:#77D1F6;  
+    font-weight:bold;  
+}  
+.menu_item a{  
+    height: 34px;  
+    line-height:34px;  
+    display:block;  
+}  
+#navigator{  
+    position:relative;  
+    float:left;  
+    width:200px;  
+    margin:5px 2px 5px 2px;  
+    left:5px;  
+    border-color: #77D1F6;  
+    border-width: 2px;  
+    border-style: solid;  
+    border-radius: 12px;  
+    -moz-box-shadow: 6px 6px 12px #282828;  
+    -webkit-box-shadow: 6px 6px 12px #282828;  
+}  
+#main{  
+    position:relative;  
+    float:left;  
+    width: 80%;  
+    margin:5px;  
+    left:5px;  
+    border-color: #77D1F6;  
+    border-width: 2px;  
+    border-style: solid;  
+    border-radius: 12px 12px;  
+    -moz-box-shadow: 6px 6px 12px #282828;  
+    -webkit-box-shadow: 6px 6px 12px #282828;  
+}  
+iframe{  
+    height:100%;  
+    width:100%;  
+    background:#FFF;  
+    position:relative;  
+    border-radius:12px;  
+    overflow:hidden;  
+}  
+#footer{  
+    width:100%;  
+    height:100%
+    width:100%;  
+}  
+#footer #text{  
+    text-align:center;  
+    font-size:14px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+    font-weight:bold;  
+}  
+t-weight:bold;  
+}  
+ 
+   font-size:14px;  
+    font-family:Î¢ÈíÑÅºÚ;  
+    font-weight:bold;  
+}  
+nt-weight:bold;  
+}  
+x;  
+    font-family:Î¢ÈíÑÅºÚ;  
+    font-weight:bold;  
+}   
